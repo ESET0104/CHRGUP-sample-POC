@@ -1,0 +1,14 @@
+﻿using esyasoft.mobility.CHRGUP.service.api.Metadata;
+using esyasoft.mobility.CHRGUP.service.api.Models;
+
+namespace esyasoft.mobility.CHRGUP.service.api.Interfaces
+{
+    public interface IChargerService
+    {
+        Task<List<Charger>> GetAllAsync();
+        Task<Charger> RegisterAsync(string locationId);
+        Task UpdateStatusAsync(string chargerId, ChargerStatus status);
+        Task UpdateHeartbeatAsync(string chargerId, DateTime timestamp);
+    }
+}
+
