@@ -1,6 +1,6 @@
 ﻿using esyasoft.mobility.CHRGUP.service.api.Interfaces;
-using esyasoft.mobility.CHRGUP.service.api.Metadata;
-using esyasoft.mobility.CHRGUP.service.api.Models;
+using esyasoft.mobility.CHRGUP.service.core.Metadata;
+using esyasoft.mobility.CHRGUP.service.core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace esyasoft.mobility.CHRGUP.service.api.Controllers

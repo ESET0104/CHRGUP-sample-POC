@@ -1,4 +1,4 @@
-﻿using esyasoft.mobility.CHRGUP.service.api.Data.DTOs.Location;
+﻿using esyasoft.mobility.CHRGUP.service.api.DTOs.Location;
 using esyasoft.mobility.CHRGUP.service.api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

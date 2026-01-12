@@ -1,7 +1,8 @@
-﻿using esyasoft.mobility.CHRGUP.service.api.Data;
-using esyasoft.mobility.CHRGUP.service.api.Data.DTOs.Location;
+﻿using esyasoft.mobility.CHRGUP.service.persistence.Data;
+using esyasoft.mobility.CHRGUP.service.api.DTOs.Location;
+//using esyasoft.mobility.CHRGUP.service.api.DTOs.Location;
 using esyasoft.mobility.CHRGUP.service.api.Interfaces;
-using esyasoft.mobility.CHRGUP.service.api.Models;
+using esyasoft.mobility.CHRGUP.service.core.Models;
 using Microsoft.EntityFrameworkCore;
 using NanoidDotNet;
 

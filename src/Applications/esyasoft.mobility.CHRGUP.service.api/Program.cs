@@ -1,4 +1,4 @@
-using esyasoft.mobility.CHRGUP.service.api.Data;
+using esyasoft.mobility.CHRGUP.service.persistence.Data;
 using esyasoft.mobility.CHRGUP.service.api.Interfaces;
 using esyasoft.mobility.CHRGUP.service.api.Services;
 using Microsoft.EntityFrameworkCore;

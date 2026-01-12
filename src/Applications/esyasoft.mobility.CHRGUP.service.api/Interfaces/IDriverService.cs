@@ -1,6 +1,7 @@
-﻿using esyasoft.mobility.CHRGUP.service.api.Data.DTOs.Driver;
-using esyasoft.mobility.CHRGUP.service.api.Metadata;
-using esyasoft.mobility.CHRGUP.service.api.Models;
+﻿//using esyasoft.mobility.CHRGUP.service.api.Data.DTOs.Driver;
+using esyasoft.mobility.CHRGUP.service.api.DTOs.Driver;
+using esyasoft.mobility.CHRGUP.service.core.Metadata;
+using esyasoft.mobility.CHRGUP.service.core.Models;
 
 
 namespace esyasoft.mobility.CHRGUP.service.api.Interfaces

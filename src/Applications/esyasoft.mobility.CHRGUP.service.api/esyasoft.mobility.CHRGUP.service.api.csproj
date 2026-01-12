@@ -9,20 +9,19 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Nanoid" Version="3.1.0" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\esyasoft.mobility.CHRGUP.service.core\esyasoft.mobility.CHRGUP.service.core.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\esyasoft.mobility.CHRGUP.service.persistence\esyasoft.mobility.CHRGUP.service.persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Helper\" />
-    <Folder Include="Models\" />
     <Folder Include="Mapper\" />
     <Folder Include="Broker\" />
     <Folder Include="Validators\" />

@@ -1,4 +1,5 @@
-﻿using esyasoft.mobility.CHRGUP.service.api.Data.DTOs.Vehicle;
+﻿using esyasoft.mobility.CHRGUP.service.api.DTOs.Vehicle;
+//using esyasoft.mobility.CHRGUP.service.api.DTOs.Vehicle;
 using esyasoft.mobility.CHRGUP.service.api.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

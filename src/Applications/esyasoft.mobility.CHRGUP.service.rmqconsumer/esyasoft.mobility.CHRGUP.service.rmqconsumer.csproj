@@ -13,5 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\esyasoft.mobility.CHRGUP.service.core\esyasoft.mobility.CHRGUP.service.core.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\esyasoft.mobility.CHRGUP.service.persistence\esyasoft.mobility.CHRGUP.service.persistence.csproj" />
   </ItemGroup>
 </Project>
