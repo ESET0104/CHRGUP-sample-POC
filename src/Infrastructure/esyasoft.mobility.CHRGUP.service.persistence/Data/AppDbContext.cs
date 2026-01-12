@@ -19,7 +19,7 @@ namespace esyasoft.mobility.CHRGUP.service.persistence.Data
         public DbSet<Manager> managers { get; set; }
         public DbSet<Supervisor> supervisors { get; set; }
         public DbSet<Vehicle> vehicles { get; set; }
-
+        public DbSet<ChargerConfig> chargerConfigs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Vehicle>(entity =>
