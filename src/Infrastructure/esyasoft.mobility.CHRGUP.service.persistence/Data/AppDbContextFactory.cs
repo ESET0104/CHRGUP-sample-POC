@@ -1,57 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DotNetEnv;
+using esyasoft.mobility.CHRGUP.service.persistence.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.IO;
 
-namespace esyasoft.mobility.CHRGUP.service.persistence.Data
+namespace esyasoft.mobility.CHRGUP.service.persistence;
+
+public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
-    public class AppDbContextFactory
-        : IDesignTimeDbContextFactory<AppDbContext>
+    public AppDbContext CreateDbContext(string[] args)
     {
-        public AppDbContext CreateDbContext(string[] args)
-        {
-            var current = Directory.GetCurrentDirectory();
+        Env.Load("../../.env");
+        var cs = Environment.GetEnvironmentVariable("ConnectionStrings__DBConnection");
 
-            // Walk UP until we find "src"
-            while (!Directory.Exists(Path.Combine(current, "src")))
-            {
-                current = Directory.GetParent(current)?.FullName
-                          ?? throw new DirectoryNotFoundException(
-                              "Could not locate solution root containing 'src' folder.");
-            }
+        if (string.IsNullOrWhiteSpace(cs))
+            throw new InvalidOperationException(
+                "Connection string not found in .env file.");
 
-            var apiPath = Path.Combine(
-                current,
-                "src",
-                "Applications",
-                "esyasoft.mobility.CHRGUP.service.api");
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseNpgsql(cs)
+            .Options;
 
-            if (!Directory.Exists(apiPath))
-                throw new DirectoryNotFoundException(
-                    $"API project not found at: {apiPath}");
-
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(apiPath)
-                .AddJsonFile("appsettings.json", optional: false)
-                .AddJsonFile("appsettings.Development.json", optional: true)
-                .Build();
-
-            var connectionString =
-                configuration.GetConnectionString("DefaultConnection");
-
-            if (string.IsNullOrWhiteSpace(connectionString))
-                throw new InvalidOperationException(
-                    "Connection string 'Default' not found.");
-
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseNpgsql(
-                    connectionString,
-                    b => b.MigrationsAssembly(
-                        "esyasoft.mobility.CHRGUP.service.persistence"))
-                .Options;
-
-            return new AppDbContext(options);
-        }
+        return new AppDbContext(options);
     }
 }
