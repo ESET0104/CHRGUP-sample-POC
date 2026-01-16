@@ -3,6 +3,9 @@ using esyasoft.mobility.CHRGUP.service.api.Interfaces;
 using esyasoft.mobility.CHRGUP.service.api.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using DotNetEnv;
+
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,16 +18,28 @@ builder.Services.AddControllers()
             new JsonStringEnumConverter());
     });
 builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    //var conn = builder.Configuration.GetConnectionString("ConnectionStrings__DBConnection");
+    var conn = builder.Configuration.GetConnectionString("DBConnection");
+    Console.WriteLine($"Conn is: {conn}");
+    if (string.IsNullOrEmpty(conn))
+        throw new InvalidOperationException("Connection string not found.");
+
     options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    )
-);
+        conn,
+        b => b.MigrationsAssembly("esyasoft.mobility.CHRGUP.service.persistence")
+    );
+});
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddScoped<IChargerService, ChargerService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
+builder.Services.AddScoped<IChargingSessionService, ChargingSessionService>();
+builder.Services.AddScoped<ILogService, LogService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
+
 
 
 
