@@ -19,16 +19,18 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
         private readonly WebSocket _socket;
         private readonly string _chargePointId;
         private readonly string _tenantId;
+        private readonly int _evseId;
         public LockedOcppProtocol LockedProtocol { get; private set; } = LockedOcppProtocol.Unknown;
 
         
 
 
-        public ChargerConnection(string chargePointId, string tenantId, WebSocket socket)
+        public ChargerConnection(string chargePointId, string tenantId, WebSocket socket , int evseId)
         {
             _chargePointId = chargePointId;
             _tenantId = tenantId;
             _socket = socket;
+            _evseId = evseId;
 
             ChargerConnectionManager.RegisterConnection(chargePointId, this);
         }
@@ -78,8 +80,66 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
                     }
                     var json = Encoding.UTF8.GetString(buffer, 0, result.Count);
                     var doc = JsonDocument.Parse(json);
-                    //var payload = doc.RootElement[3];
+                    var action = doc.RootElement[2].GetString();
                     var payload = doc.RootElement.GetArrayLength() > 3 ? doc.RootElement[3] : default;
+
+
+                    if (action == "BootNotification")
+                    {
+
+                        LockedOcppProtocol detectedProtocol;
+
+
+                        if (payload.TryGetProperty("chargingStation", out _))
+                        {
+                            detectedProtocol = LockedOcppProtocol.Ocpp201;
+                        }
+                        else
+                        {
+                            detectedProtocol = LockedOcppProtocol.Ocpp16;
+                        }
+
+                        if (detectedProtocol == LockedOcppProtocol.Ocpp201)
+                        {
+                            ChargerProtocolStore.Set(_chargePointId, OcppProtocol.V201);
+                        }
+                        else
+                        {
+                            ChargerProtocolStore.Set(_chargePointId, OcppProtocol.V16);
+                        }
+
+                        try
+                        {
+                            LockProtocol(detectedProtocol);
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            Console.WriteLine($"Protocol lock violation for {_chargePointId}: {ex.Message}");
+
+                            await _socket.CloseAsync(
+                                WebSocketCloseStatus.PolicyViolation,
+                                "Protocol mismatch",
+                                CancellationToken.None
+                            );
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        var expected = LockedProtocol;
+                        var actual = ChargerProtocolStore.Get(_chargePointId) == OcppProtocol.V201
+                            ? LockedOcppProtocol.Ocpp201
+                            : LockedOcppProtocol.Ocpp16;
+
+                        if (expected != LockedOcppProtocol.Unknown && expected != actual)
+                        {
+                            Console.WriteLine($"Protocol mismatch for {_chargePointId}");
+                            await _socket.CloseAsync(WebSocketCloseStatus.PolicyViolation,
+                                "Protocol mismatch", CancellationToken.None);
+                            return;
+                        }
+                    }
+                    
                     await ProtocolRouter.RouteAsync(
                         json,
                         _chargePointId,
@@ -92,7 +152,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
             finally
             {
                 ChargerProtocolStore.Remove(_chargePointId);
-                CanonicalSessionStore.Remove(_chargePointId);
+                CanonicalSessionStore.Remove(_chargePointId, _evseId);
                 HeartbeatStore.Remove(_chargePointId);
                 ChargerConnectionManager.Remove(_chargePointId);
                 if (!gracefulClose)
@@ -109,12 +169,8 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
                             Timestamp = DateTime.UtcNow
                         }
                     );
-                    //if (state.ActiveSessionId != null)
-                    //{
-
-                    //    state.ActiveSessionId = null;
-                    //}
-                    var session = CanonicalSessionStore.GetOrCreate(_chargePointId, ChargerProtocolStore.Get(_chargePointId));
+                    
+                    var session = CanonicalSessionStore.GetOrCreate(_chargePointId, ChargerProtocolStore.Get(_chargePointId), _evseId);
                     session.Active = false;
                 }
 

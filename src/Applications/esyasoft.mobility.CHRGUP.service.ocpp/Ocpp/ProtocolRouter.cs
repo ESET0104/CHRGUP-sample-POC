@@ -35,6 +35,8 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp
             // Detect protocol only once (BootNotification)
             if (doc.RootElement[2].GetString() == "BootNotification")
             {
+                ChargerProtocolStore.MarkBooted(chargerId);
+
                 if (payload.TryGetProperty("chargingStation", out _))
                 {
                     ChargerProtocolStore.Set(chargerId, OcppProtocol.V201);

@@ -15,6 +15,8 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
             string messageId,
             WebSocket socket)
         {
+            var state = ChargerStateStore.Get(chargePointId);
+            state.IsFaulted = false;
             HeartbeatStore.Update(chargePointId);
             ChargerProtocolStore.Set(chargePointId, OcppProtocol.V201);
             ChargerProtocolStore.MarkBooted(chargePointId);

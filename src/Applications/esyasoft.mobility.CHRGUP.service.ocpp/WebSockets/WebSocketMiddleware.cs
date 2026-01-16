@@ -41,10 +41,13 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
 
             var socket = await context.WebSockets.AcceptWebSocketAsync();
 
+            var evseId = context.Request.Query.TryGetValue("evseId", out var e)? int.Parse(e): 1;
+
             var connection = new ChargerConnection(
                 chargePointId,
                 tenantId,
-                socket
+                socket,
+                evseId
             );
 
             await connection.ListenAsync();
