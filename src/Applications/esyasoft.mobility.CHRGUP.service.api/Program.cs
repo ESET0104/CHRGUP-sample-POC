@@ -19,9 +19,9 @@ builder.Services.AddControllers()
     });
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    //var conn = builder.Configuration.GetConnectionString("ConnectionStrings__DBConnection");
     var conn = builder.Configuration.GetConnectionString("DBConnection");
-    Console.WriteLine($"Conn is: {conn}");
+    
+
     if (string.IsNullOrEmpty(conn))
         throw new InvalidOperationException("Connection string not found.");
 
