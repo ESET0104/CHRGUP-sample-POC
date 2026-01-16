@@ -1,41 +1,33 @@
+using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
+using esyasoft.mobility.CHRGUP.service.ocpp.WebSockets;
+//using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
+//using OcppMicroservice.Watchdog;
+//using OcppMicroservice.WebSockets;
+using esyasoft.mobility.CHRGUP.service.ocpp.Data;
+using esyasoft.mobility.CHRGUP.service.ocpp.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddHostedService<ChargerWatchdog>();
+
+builder.Services.AddDbContext<OcppDbContext>(opt =>
+    opt.UseNpgsql(builder.Configuration["OcppDb:ConnectionString"]));
+
+builder.Services.AddScoped<ChargerAuthService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+app.UseWebSockets();
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
+app.Map("/ws", wsApp =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    wsApp.UseMiddleware<WebSocketMiddleware>();
+});
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+_ = RabbitMqConnection.Channel;
+
+var commandConsumer = new RabbitMqConsumer(RabbitMqConnection.Channel);
+commandConsumer.Start();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
