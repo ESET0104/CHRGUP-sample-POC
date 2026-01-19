@@ -1,8 +1,9 @@
-﻿using System.Text.Json;
-using System.Net.WebSockets;
-using esyasoft.mobility.CHRGUP.service.ocpp.State;
+﻿using esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16;
 using esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201;
-using esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16;
+using esyasoft.mobility.CHRGUP.service.ocpp.State;
+using esyasoft.mobility.CHRGUP.service.ocpp.WebSockets;
+using System.Net.WebSockets;
+using System.Text.Json;
 
 
 namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp
@@ -36,13 +37,15 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp
             if (doc.RootElement[2].GetString() == "BootNotification")
             {
                 ChargerProtocolStore.MarkBooted(chargerId);
-
+                var conn = ChargerConnectionManager.GetConnection(chargerId);
                 if (payload.TryGetProperty("chargingStation", out _))
                 {
+                    conn.LockProtocol(LockedOcppProtocol.Ocpp201);
                     ChargerProtocolStore.Set(chargerId, OcppProtocol.V201);
                 }
                 else
                 {
+                    conn.LockProtocol(LockedOcppProtocol.Ocpp16);
                     ChargerProtocolStore.Set(chargerId, OcppProtocol.V16);
                 }
             }
