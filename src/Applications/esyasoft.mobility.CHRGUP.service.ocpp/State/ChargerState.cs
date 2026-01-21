@@ -8,7 +8,7 @@
         //
         public bool IsConnected { get; set; }
         //public string? ActiveSessionId { get; set; }
-        public string? ActiveTransactionId { get; set; }
+        //public string? ActiveTransactionId { get; set; }
         public bool IsFaulted { get; set; }
     }
 

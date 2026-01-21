@@ -25,9 +25,9 @@ namespace esyasoft.mobility.CHRGUP.service.core.Models
 
         public DateTime? EndTime { get; set; }
 
-        public int InitialCharge { get; set; }
+        public double InitialCharge { get; set; }
 
-        public int SOC { get; set; }
+        public double SOC { get; set; }
 
         public decimal? EnergyConsumedKwh { get; set; }
 

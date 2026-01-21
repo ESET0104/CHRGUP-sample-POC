@@ -44,7 +44,10 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
                     {
                         SessionId = sessionId,
                         ChargerId = chargePointId,
-                        StartTime = timestamp
+                        EvseId = session.EvseId,
+                        StartTime = timestamp,
+                        EnergyKwh = session.EnergyKwh,
+                        Soc = session.Soc
                     });
             }
             else if (eventType == "Ended")
@@ -57,12 +60,16 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
                     {
                         SessionId = sessionId,
                         ChargerId = chargePointId,
+                        EvseId = session.EvseId,
                         StopTime = timestamp,
-                        triggerReason
+                        triggerReason,
+                        EnergyKwh = session.EnergyKwh,
+                        Soc = session.Soc
                     });
 
 
                 session.Active = false;
+                CanonicalSessionStore.Remove(chargePointId, session.EvseId);
                 //state.ActiveSessionId = null;
             }
         }
