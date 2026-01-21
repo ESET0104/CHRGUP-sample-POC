@@ -12,6 +12,7 @@ namespace esyasoft.mobility.CHRGUP.service.core.Models
         [Required] public string FullName { get; set; }
         [Required] public string Email { get; set; }
         [Required] public string Password { get; set; }
+        [Required] public string RfidTag { get; set; }
         public string? Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }
         [Required] public DriverStatus Status { get; set; }
