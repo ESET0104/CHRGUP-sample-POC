@@ -29,8 +29,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         b => b.MigrationsAssembly("esyasoft.mobility.CHRGUP.service.persistence")
     );
 });
-builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IChargerService, ChargerService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
