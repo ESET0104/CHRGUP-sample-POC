@@ -81,8 +81,20 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
 
         private async Task HandleMessage(object sender, BasicDeliverEventArgs ea)
         {
-            var json = Encoding.UTF8.GetString(ea.Body.ToArray());
-            var root = JsonDocument.Parse(json).RootElement;
+            //var json = Encoding.UTF8.GetString(ea.Body.ToArray());
+            //var root = JsonDocument.Parse(json).RootElement;
+            string json;
+            JsonElement root;
+            try
+            {
+                json = Encoding.UTF8.GetString(ea.Body.ToArray());
+                root = JsonDocument.Parse(json).RootElement;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Invalid RabbitMQ message: {ex.Message}");
+                return;
+            }
 
             var routingKey = ea.RoutingKey;
 
@@ -193,7 +205,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
                 canonical.SessionId = sessionId;
                 canonical.UserId = userId;
 
-                await SendStart(protocol, socket, chargerId, canonical.SessionId, canonical.UserId, canonical.EvseID);
+                await SendStart(protocol, socket, chargerId, canonical.SessionId, canonical.UserId, canonical.EvseId);
             }
                 //await SendStart(protocol, socket, chargerId, sessionId, userId);
 
@@ -209,7 +221,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
                     return;
                 }
 
-                await SendStop(protocol, socket, chargerId, session.SessionId, session.EvseID);
+                await SendStop(protocol, socket, chargerId, session.SessionId, session.EvseId);
 
             }
             //

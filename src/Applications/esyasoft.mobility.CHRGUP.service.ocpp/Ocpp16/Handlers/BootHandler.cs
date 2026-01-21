@@ -15,6 +15,9 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
             string messageId,
             WebSocket socket)
         {
+
+            var state = ChargerStateStore.Get(chargerId);
+            state.IsFaulted = false;
             HeartbeatStore.Update(chargerId);
             var conn = ChargerConnectionManager.GetConnection(chargerId);
             conn?.LockProtocol(LockedOcppProtocol.Ocpp16);

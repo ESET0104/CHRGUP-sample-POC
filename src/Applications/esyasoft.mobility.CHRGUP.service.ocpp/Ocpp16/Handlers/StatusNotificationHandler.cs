@@ -19,6 +19,10 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
 
             if (status == "Faulted")
             {
+
+                var state = ChargerStateStore.Get(chargerId);
+                state.IsFaulted = true;
+
                 await RabbitMqEventPublisher.PublishAsync(
                     "event.charger.faulted",
                     new
@@ -31,6 +35,10 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
             }
             else if (status == "Available")
             {
+
+                var state = ChargerStateStore.Get(chargerId);
+                state.IsFaulted = false;
+
                 await RabbitMqEventPublisher.PublishAsync(
                     "event.charger.recovered",
                     new
