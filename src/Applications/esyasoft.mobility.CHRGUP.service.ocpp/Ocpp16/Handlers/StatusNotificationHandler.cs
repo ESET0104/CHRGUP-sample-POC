@@ -1,4 +1,5 @@
-﻿using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
+﻿using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
+using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
 using System.Text.Json;
 
@@ -23,30 +24,30 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
                 var state = ChargerStateStore.Get(chargerId);
                 state.IsFaulted = true;
 
+                var ev = new ChargerFaultEvent
+                {
+                    ChargerId = chargerId,
+                    FaultCode = errorCode ?? "Unknown",
+                    Timestamp = DateTime.Now
+                };
+
                 await RabbitMqEventPublisher.PublishAsync(
                     "event.charger.faulted",
-                    new
-                    {
-                        ChargerId = chargerId,
-                        ConnectorId = connectorId,
-                        FaultCode = errorCode ?? "Unknown",
-                        Timestamp = DateTime.UtcNow
-                    });
+                    ev);
             }
             else if (status == "Available")
             {
 
                 var state = ChargerStateStore.Get(chargerId);
                 state.IsFaulted = false;
-
+                var ev = new ChargerRecoverEvent
+                {
+                    ChargerId = chargerId,
+                    Timestamp = DateTime.Now
+                };
                 await RabbitMqEventPublisher.PublishAsync(
                     "event.charger.recovered",
-                    new
-                    {
-                        ChargerId = chargerId,
-                        ConnectorId = connectorId,
-                        Timestamp = DateTime.UtcNow
-                    });
+                   ev);
             }
             else
             {
@@ -57,7 +58,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
                         ChargerId = chargerId,
                         ConnectorId = connectorId,
                         Status = status,
-                        Timestamp = DateTime.UtcNow
+                        Timestamp = DateTime.Now
                     });
             }
         }

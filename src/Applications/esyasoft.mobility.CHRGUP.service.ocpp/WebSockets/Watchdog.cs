@@ -26,7 +26,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
 
         private async Task CheckChargers()
         {
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
 
             foreach (var (chargerId, lastSeen) in HeartbeatStore.GetAll())
             {
@@ -56,7 +56,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
                 {
                     ChargerId = chargerId,
                     FaultCode = "PowerLoss",
-                    Timestamp = DateTime.UtcNow
+                    Timestamp = DateTime.Now
                 }
             );
         }

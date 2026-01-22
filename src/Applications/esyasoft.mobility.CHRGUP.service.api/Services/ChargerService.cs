@@ -33,7 +33,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
             {
                 Id = Nanoid.Generate(size: 10),
                 Status = ChargerStatus.Available,
-                LastSeen = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified),
+                LastSeen = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified),
                 LocationId = locationId
             };
 

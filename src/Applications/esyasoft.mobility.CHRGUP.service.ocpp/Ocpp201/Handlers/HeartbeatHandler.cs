@@ -15,7 +15,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
             {
                 3,
                 messageId,
-                new { currentTime = DateTime.UtcNow }
+                new { currentTime = DateTime.Now }
             };
 
             await socket.SendAsync(

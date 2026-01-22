@@ -28,7 +28,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
                 {
                     ChargerId = chargerId,
                     Protocol = "1.6",
-                    Timestamp = DateTime.UtcNow
+                    Timestamp = DateTime.Now
                 });
 
             var response = new object[]
@@ -38,7 +38,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
                 new
                 {
                     status = "Accepted",
-                    currentTime = DateTime.UtcNow,
+                    currentTime = DateTime.Now,
                     heartbeatInterval = 10
                 }
             };

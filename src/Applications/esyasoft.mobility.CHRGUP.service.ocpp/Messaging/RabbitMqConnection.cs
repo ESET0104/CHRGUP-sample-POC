@@ -13,7 +13,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
             var factory = new ConnectionFactory
             {
                 HostName = "localhost",
-                VirtualHost = "ev-charging",
+                VirtualHost = "ev-charging",   
                 UserName = "guest",
                 Password = "guest"
             };

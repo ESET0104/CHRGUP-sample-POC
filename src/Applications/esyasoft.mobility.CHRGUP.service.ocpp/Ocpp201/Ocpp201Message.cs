@@ -5,10 +5,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201
 {
     public class Ocpp201Message
     {
-        public static async Task SendAuthorizeResult(
-    WebSocket socket,
-    string messageId,
-    bool accepted)
+        public static async Task SendAuthorizeResult(WebSocket socket,string messageId,bool accepted)
         {
             var json = OcppMessage.CreateCallResult(messageId, new
             {

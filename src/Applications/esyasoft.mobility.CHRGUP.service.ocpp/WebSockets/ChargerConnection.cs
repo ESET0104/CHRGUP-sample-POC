@@ -152,7 +152,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
             finally
             {
                 ChargerProtocolStore.Remove(_chargePointId);
-                CanonicalSessionStore.Remove(_chargePointId, _evseId);
+                //CanonicalSessionStore.Remove(_chargePointId, _evseId);
                 HeartbeatStore.Remove(_chargePointId);
                 ChargerConnectionManager.Remove(_chargePointId);
                 if (!gracefulClose)
@@ -166,12 +166,12 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
                         {
                             ChargerId = _chargePointId,
                             FaultCode = "PowerLoss",
-                            Timestamp = DateTime.UtcNow
+                            Timestamp = DateTime.Now
                         }
                     );
                     
-                    var session = CanonicalSessionStore.GetOrCreate(_chargePointId, ChargerProtocolStore.Get(_chargePointId), _evseId);
-                    session.Active = false;
+                    //var session = CanonicalSessionStore.GetOrCreate(_chargePointId, ChargerProtocolStore.Get(_chargePointId), _evseId);
+                    //session.Active = false;
                 }
 
                 try

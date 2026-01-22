@@ -9,7 +9,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.State
 
         public static void Update(string chargerId)
         {
-            _lastSeen[chargerId] = DateTime.UtcNow;
+            _lastSeen[chargerId] = DateTime.Now;
         }
 
         public static bool TryGetLastSeen(string chargerId, out DateTime lastSeen)

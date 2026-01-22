@@ -201,11 +201,11 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
             //
             if (routingKey == "command.start")
             {
-                var canonical = CanonicalSessionStore.GetOrCreate(chargerId, protocol, evseId);
-                canonical.SessionId = sessionId;
-                canonical.UserId = userId;
+                //var canonical = CanonicalSessionStore.GetOrCreate(chargerId, protocol, evseId);
+                //canonical.SessionId = sessionId;
+                //canonical.UserId = userId;
 
-                await SendStart(protocol, socket, chargerId, canonical.SessionId, canonical.UserId, canonical.EvseId);
+                await SendStart(protocol, socket, chargerId, sessionId, userId, evseId);
             }
                 //await SendStart(protocol, socket, chargerId, sessionId, userId);
 
@@ -214,14 +214,14 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
                 //var canonical = CanonicalSessionStore.GetOrCreate(chargerId, protocol);
                 //await SendStop(protocol, socket, chargerId, canonical.SessionId);
 
-                var session = CanonicalSessionStore.GetOrCreate(chargerId, protocol, evseId);
-                if (!session.Active || session.SessionId == null)
-                {
-                    Console.WriteLine("No active session to stop");
-                    return;
-                }
+                //var session = CanonicalSessionStore.GetOrCreate(chargerId, protocol, evseId);
+                //if (!session.Active || session.SessionId == null)
+                //{
+                //    Console.WriteLine("No active session to stop");
+                //    return;
+                //}
 
-                await SendStop(protocol, socket, chargerId, session.SessionId, session.EvseId);
+                await SendStop(protocol, socket, chargerId, sessionId, evseId);
 
             }
             //
@@ -256,12 +256,12 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
                     return;
                 }
 
-                var session = CanonicalSessionStore.GetOrCreate(chargerId, protocol, evseId);
-                if (session.Active)
-                {
-                    Console.WriteLine("Cannot start: session already active");
-                    return;
-                }
+                //var session = CanonicalSessionStore.GetOrCreate(chargerId, protocol, evseId);
+                //if (session.Active)
+                //{
+                //    Console.WriteLine("Cannot start: session already active");
+                //    return;
+                //}
 
                 await SendOcppCommand(socket, "RequestStartTransaction", new
                 {
@@ -278,12 +278,12 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
                     return;
                 }
 
-                var session = CanonicalSessionStore.GetOrCreate(chargerId, protocol, evseId);
-                if (session.Active)
-                {
-                    Console.WriteLine("Cannot start: session already active");
-                    return;
-                }
+                //var session = CanonicalSessionStore.GetOrCreate(chargerId, protocol, evseId);
+                //if (session.Active)
+                //{
+                //    Console.WriteLine("Cannot start: session already active");
+                //    return;
+                //}
 
                 await SendOcppCommand(socket, "RemoteStartTransaction", new
                 {
@@ -299,12 +299,12 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
 
             if (protocol == OcppProtocol.V201)
             {
-                var session = CanonicalSessionStore.GetOrCreate(chargerId, protocol, evseId);
-                if (!session.Active || session.SessionId == null)
-                {
-                    Console.WriteLine("No active session to stop");
-                    return;
-                }
+                //var session = CanonicalSessionStore.GetOrCreate(chargerId, protocol, evseId);
+                //if (!session.Active || session.SessionId == null)
+                //{
+                //    Console.WriteLine("No active session to stop");
+                //    return;
+                //}
 
                 await SendOcppCommand(socket, "RequestStopTransaction", new
                 {
@@ -313,12 +313,12 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
             }
             else
             {
-                var session = CanonicalSessionStore.GetOrCreate(chargerId, protocol, evseId);
-                if (!session.Active || session.SessionId == null)
-                {
-                    Console.WriteLine("No active session to stop");
-                    return;
-                }
+                //var session = CanonicalSessionStore.GetOrCreate(chargerId, protocol, evseId);
+                //if (!session.Active || session.SessionId == null)
+                //{
+                //    Console.WriteLine("No active session to stop");
+                //    return;
+                //}
 
 
                 await SendOcppCommand(socket, "RemoteStopTransaction", new

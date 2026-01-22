@@ -38,7 +38,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
                 ChargerId = dto.ChargerId,
                 DriverId = dto.DriverId,
                 Status = SessionStatus.Pending,
-                StartTime = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified)
+                StartTime = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified)
             };
 
             _db.chargingSessions.Add(session);

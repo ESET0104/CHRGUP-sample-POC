@@ -1,4 +1,5 @@
 ﻿using DotNetEnv;
+using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
 using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
 using System.Text.Json;
@@ -11,15 +12,17 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
             JsonElement payload,
             string chargePointId)
         {
-            //var state = ChargerStateStore.Get(chargePointId);
-            //if (state.ActiveSessionId == null)
-            //    return;
+
 
             var evseId = payload.GetProperty("evseId").GetInt32();
 
-            var session = CanonicalSessionStore.GetOrCreate(chargePointId, OcppProtocol.V201, evseId);
-            if (!session.Active || session.SessionId == null)
-                return;
+
+            double energy = 0;
+            double soc = 0;
+            var sessionId = payload
+            .GetProperty("transactionId")
+            .GetInt32()
+            .ToString();
 
             foreach (var meterValue in payload
                 .GetProperty("meterValue")
@@ -46,27 +49,27 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
 
                     if (measurand == "Energy.Active.Import.Register")
                     {
-                        session.EnergyKwh = value;
+                        energy = value;
                     }
                     if (measurand == "SoC")
                     {
-                        session.Soc = value;
+                        soc = value;
                     }
+
+                    var meterEvent = new MeterValueEvent
+                    {
+                        ChargerId = chargePointId,
+                        SessionId = sessionId,
+                        Timestamp = timestamp,
+                        EnergyKwh = energy,
+                        SOC = soc
+                    };
+
 
                     await RabbitMqEventPublisher.PublishAsync(
                         "event.meter.value",
-                        new
-                        {
-                            //SessionId = state.ActiveSessionId,
-                            SessionId = session.SessionId,
-                            ChargerId = chargePointId,
-                            EvseId = session.EvseId,
-                            Timestamp = timestamp,
-                            EnergyKwh = session.EnergyKwh,
-                            Soc = session.Soc
-                        }
+                        meterEvent
                     );
-                    session.Active = false;
                 }
             }
         }

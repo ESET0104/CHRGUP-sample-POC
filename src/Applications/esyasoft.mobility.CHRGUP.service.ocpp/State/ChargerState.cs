@@ -1,4 +1,5 @@
-﻿namespace esyasoft.mobility.CHRGUP.service.ocpp.State
+﻿
+namespace esyasoft.mobility.CHRGUP.service.ocpp.State
 {
     public class ChargerState
     {
@@ -10,6 +11,7 @@
         //public string? ActiveSessionId { get; set; }
         //public string? ActiveTransactionId { get; set; }
         public bool IsFaulted { get; set; }
+        public DateTime LastSeenUtc { get; internal set; }
     }
 
 }

@@ -1,30 +1,7 @@
-﻿//using System.Text.Json;
-//using OcppMicroservice.Messaging;
-//namespace OcppMicroservice.Ocpp.Handlers
-//{
-//    public static class StatusNotificationHandler
-//    {
-//        public static void Handle(
-//            JsonElement payload,
-//            string chargePointId)
-//        {
-//            var connectorId = payload.GetProperty("connectorId").GetInt32();
-//            var status = payload.GetProperty("connectorStatus").GetString();
-
-//            RabbitMqEventPublisher.PublishAsync("connector.status", new
-//            {
-//                chargePointId,
-//                connectorId,
-//                status,
-//                timestamp = DateTime.UtcNow
-//            });
-//        }
-//    }
-//}
-
-using System.Text.Json;
+﻿using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
 using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
+using System.Text.Json;
 
 namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
 {
@@ -37,9 +14,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
             HeartbeatStore.Update(chargePointId);
 
             var evseId = payload.GetProperty("evseId").GetProperty("id").GetInt32();
-
-
-            var connectorId = payload.GetProperty("connectorId").GetInt32();
+            //var connectorId = payload.GetProperty("connectorId").GetInt32();
             var status = payload.GetProperty("connectorStatus").GetString();
             var timestamp = payload.GetProperty("timestamp").GetDateTime();
 
@@ -50,39 +25,33 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
             }
 
             var state = ChargerStateStore.Get(chargePointId);
+            state.LastSeenUtc = timestamp;
 
             if (status == "Faulted")
             {
                 state.IsFaulted = true;
+                var ev = new ChargerFaultEvent
+                {
+                    ChargerId = chargePointId,
+                    FaultCode = errorCode ?? "Unknown",
+                    Timestamp = timestamp
+                };
                 await RabbitMqEventPublisher.PublishAsync(
                     "event.charger.faulted",
-                    new
-                    {
-                        ChargerId = chargePointId,
-                        ConnectorId = connectorId,
-                        FaultCode = errorCode ?? "Unknown",
-                        Timestamp = timestamp
-                    }
+                    ev
                 );
-
-                //if (state.ActiveSessionId != null)
-                //{
-                //    state.ActiveSessionId = null;
-                //}
-                var session = CanonicalSessionStore.GetOrCreate(chargePointId, OcppProtocol.V201, evseId);
-                session.Active = false;
             }
             if (status == "Available")
             {
                 state.IsFaulted = false;
                 HeartbeatStore.Update(chargePointId);
+                var ev = new ChargerRecoverEvent
+                {
+                    ChargerId = chargePointId,
+                    Timestamp = timestamp
+                };
                 await RabbitMqEventPublisher.PublishAsync(
-                    "event.charger.recovered",
-                    new
-                    {
-                        ChargerId = chargePointId,
-                        Timestamp = timestamp
-                    }
+                    "event.charger.recovered",ev
                 );
             }
         }

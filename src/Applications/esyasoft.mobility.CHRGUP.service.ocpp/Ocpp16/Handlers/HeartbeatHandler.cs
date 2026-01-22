@@ -20,7 +20,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
                 messageId,
                 new
                 {
-                    currentTime = DateTime.UtcNow
+                    currentTime = DateTime.Now
                 }
             };
 

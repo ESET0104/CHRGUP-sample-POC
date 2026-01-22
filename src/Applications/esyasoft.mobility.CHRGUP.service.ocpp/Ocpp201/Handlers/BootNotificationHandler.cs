@@ -29,7 +29,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
             {
             ChargerId = chargePointId,
             Protocol = "2.0.1",
-            Timestamp = DateTime.UtcNow
+            Timestamp = DateTime.Now
             });
             //
 
@@ -40,7 +40,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
                 new
                 {
                     status = "Accepted",
-                    currentTime = DateTime.UtcNow,
+                    currentTime = DateTime.Now,
                     interval = 5
                 }
             };
