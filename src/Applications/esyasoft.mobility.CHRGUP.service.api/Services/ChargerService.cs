@@ -39,7 +39,6 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
 
             _db.chargers.Add(charger);
             await _db.SaveChangesAsync();
-
             return charger;
         }
 
