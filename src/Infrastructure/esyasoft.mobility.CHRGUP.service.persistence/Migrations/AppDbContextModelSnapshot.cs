@@ -138,14 +138,14 @@ namespace esyasoft.mobility.CHRGUP.service.persistence.Migrations
                     b.Property<decimal?>("EnergyConsumedKwh")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("InitialCharge")
-                        .HasColumnType("double precision");
+                    b.Property<int>("InitialCharge")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("LastMeterUpdate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<double>("SOC")
-                        .HasColumnType("double precision");
+                    b.Property<int>("SOC")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp without time zone");
@@ -189,10 +189,6 @@ namespace esyasoft.mobility.CHRGUP.service.persistence.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("RfidTag")
                         .IsRequired()
                         .HasColumnType("text");
 

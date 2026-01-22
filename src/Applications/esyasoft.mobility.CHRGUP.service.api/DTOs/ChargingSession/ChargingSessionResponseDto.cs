@@ -1,4 +1,4 @@
-﻿namespace esyasoft.mobility.CHRGUP.service.api.DTOs.Session
+﻿namespace esyasoft.mobility.CHRGUP.service.api.DTOs.ChargingSession
 {
     public class ChargingSessionResponseDto
     {

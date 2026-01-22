@@ -1,4 +1,4 @@
-﻿namespace esyasoft.mobility.CHRGUP.service.api.DTOs.Charger
+﻿namespace esyasoft.mobility.CHRGUP.service.api.DTOs.ChargingSession
 {
     public class StopChargingRequestDto
     {
