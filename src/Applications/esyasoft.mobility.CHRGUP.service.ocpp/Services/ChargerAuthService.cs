@@ -1,5 +1,6 @@
 ﻿using esyasoft.mobility.CHRGUP.service.persistence.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Eventing.Reader;
 
 namespace esyasoft.mobility.CHRGUP.service.ocpp.Services
 {
@@ -19,11 +20,13 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Services
                     c.ChargerId == chargerId);
 
             if (charger == null)
+            {
+                Console.WriteLine("charger not found in config");
                 return false;
-           
-            await _db.SaveChangesAsync();
-
-            return true;
+            }
+            else
+                return true;
+            
         }
     }
 }

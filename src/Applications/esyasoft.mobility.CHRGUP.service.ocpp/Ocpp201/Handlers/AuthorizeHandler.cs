@@ -36,7 +36,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
                     //MessageId = messageId,
                     //ChargerId = chargePointId,
                     //Vin = vin,
-                    //Timestamp = DateTime.UtcNow
+                    //Timestamp = DateTime.Now
                     ChargerId = chargePointId,
                     Token = vin,
                     TokenType = "VIN",

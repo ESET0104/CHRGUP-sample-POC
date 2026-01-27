@@ -1,20 +1,17 @@
-﻿using esyasoft.mobility.CHRGUP.service.core.Metadata;
+﻿using esyasoft.mobility.CHRGUP.service.core.Helpers;
+using esyasoft.mobility.CHRGUP.service.core.Metadata;
 using esyasoft.mobility.CHRGUP.service.core.Models;
 using esyasoft.mobility.CHRGUP.service.persistence.Data;
 using esyasoft.mobility.CHRGUP.service.rmqconsumer.DTOs;
 using Microsoft.EntityFrameworkCore;
 using NanoidDotNet;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
 {
     public class StatusEvtHandler
     {
         private readonly AppDbContext _db;
-        private readonly AuditLogger _logger;
+        private readonly AuditLogger _logger; 
         public StatusEvtHandler(AppDbContext db, AuditLogger logger)
         {
             _db = db;
@@ -39,7 +36,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
             if (charger != null)
             {
                 charger.Status = ChargerStatus.Faulted;
-                charger.LastSeen = DateTime.UtcNow;
+                charger.LastSeen = DateTime.Now;
             }
 
             var activeSession = await _db.chargingSessions
@@ -55,7 +52,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 activeSession.EndTime = evt.Timestamp;
             }
 
-            await _logger.SaveLogAsync(
+            var log = await _logger.SaveLogAsync(
                 source: "ocpp",
                 eventType: "CHARGER_FAULTED",
                 message: evt.FaultCode,
@@ -63,6 +60,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 sessionId: activeSession?.Id,
                 driverId: activeSession?.DriverId
             );
+            _db.logs.Add( log );
 
             await _db.SaveChangesAsync();
         }
@@ -79,12 +77,13 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 charger.LastSeen = evt.Timestamp;
             }
 
-            await _logger.SaveLogAsync(
+            var log = await _logger.SaveLogAsync(
                 source: "ocpp",
                 eventType: "CHARGER_RECOVERED",
                 message: "Charger recovered",
                 chargerId: evt.ChargerId
             );
+            _db.logs.Add( log );
 
             await _db.SaveChangesAsync();
         }

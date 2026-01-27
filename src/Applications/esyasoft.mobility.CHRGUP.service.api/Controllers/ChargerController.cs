@@ -23,7 +23,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromQuery] string locationId)
+        public async Task<IActionResult> Register([FromBody] string locationId)
         {
             return Ok(await _chargerService.RegisterAsync(locationId));
         }
@@ -44,30 +44,30 @@ namespace esyasoft.mobility.CHRGUP.service.api.Controllers
             return NoContent();
         }
 
-        [HttpPost("{chargerId}/remote-start")]
-        public async Task<IActionResult> RemoteStart(
-            string chargerId,
-            [FromBody] StartChargingRequestDto dto)
-        {
-            await _chargerService.RemoteStartAsync(chargerId, dto);
-            return Accepted(new
-            {
-                message = "Remote start request accepted",
-                chargerId
-            });
-        }
+        //[HttpPost("{chargerId}/remote-start")]
+        //public async Task<IActionResult> RemoteStart(
+        //    string chargerId,
+        //    [FromBody] StartChargingRequestDto dto)
+        //{
+        //    await _chargerService.RemoteStartAsync(chargerId, dto);
+        //    return Accepted(new
+        //    {
+        //        message = "Remote start request accepted",
+        //        chargerId
+        //    });
+        //}
 
-        [HttpPost("{chargerId}/remote-stop")]
-        public async Task<IActionResult> RemoteStop(
-            string chargerId,
-            [FromBody] StopChargingRequestDto dto)
-        {
-            await _chargerService.RemoteStopAsync(chargerId, dto);
-            return Accepted(new
-            {
-                message = "Remote stop request accepted",
-                chargerId
-            });
-        }
+        //[HttpPost("{chargerId}/remote-stop")]
+        //public async Task<IActionResult> RemoteStop(
+        //    string chargerId,
+        //    [FromBody] StopChargingRequestDto dto)
+        //{
+        //    await _chargerService.RemoteStopAsync(chargerId, dto);
+        //    return Accepted(new
+        //    {
+        //        message = "Remote stop request accepted",
+        //        chargerId
+        //    });
+        //}
     }
 }

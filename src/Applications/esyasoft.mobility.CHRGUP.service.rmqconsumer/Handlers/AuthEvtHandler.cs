@@ -10,9 +10,9 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
     public class AuthEvtHandler
     {
         private readonly AppDbContext _db;
-        private readonly ILogger _logger;
+        private readonly ILogger<AuthEvtHandler> _logger;
         private readonly RmqPublisher _publisher;
-        public AuthEvtHandler(AppDbContext db, ILogger logger, RmqPublisher publisher) 
+        public AuthEvtHandler(AppDbContext db, ILogger<AuthEvtHandler> logger, RmqPublisher publisher) 
         {  
             _db = db; 
             _logger = logger;
@@ -83,7 +83,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
             if (charger.Status == ChargerStatus.Available)
             {
                 charger.Status = ChargerStatus.Preparing;
-                charger.LastSeen = DateTime.UtcNow;
+                charger.LastSeen = DateTime.Now;
 
                 await _db.SaveChangesAsync();
 

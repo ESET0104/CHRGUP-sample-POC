@@ -1,4 +1,5 @@
-﻿using esyasoft.mobility.CHRGUP.service.core.Metadata;
+﻿using esyasoft.mobility.CHRGUP.service.core.Helpers;
+using esyasoft.mobility.CHRGUP.service.core.Metadata;
 using esyasoft.mobility.CHRGUP.service.persistence.Data;
 using esyasoft.mobility.CHRGUP.service.rmqconsumer.DTOs;
 using Microsoft.EntityFrameworkCore;
@@ -12,13 +13,13 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
     public class MeterValueEvtHandler
     {
         private readonly AppDbContext _db;
-        private readonly ILogger _logger;
-        private readonly AuditLogger _logger1;
-        public MeterValueEvtHandler(AppDbContext db, ILogger logger, AuditLogger logger1)
+        private readonly ILogger<MeterValueEvtHandler> _logger;
+        private readonly AuditLogger _auditlogger;
+        public MeterValueEvtHandler(AppDbContext db, ILogger<MeterValueEvtHandler> logger, AuditLogger auditlogger)
         {
             _db = db;
             _logger = logger;
-            _logger1 = logger1;
+            _auditlogger = auditlogger;
         }
 
         public async Task HandleMeterValue(MeterValueEvent evt)
@@ -39,7 +40,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
             session.EnergyConsumedKwh = evt.EnergyKwh;
             session.SOC = evt.SOC;
 
-            await _logger1.SaveLogAsync(
+            var log = await _auditlogger.SaveLogAsync(
                 source: "charger",
                 eventType: "METER_VALUE",
                 message: $"Energy consumed updated: {evt.EnergyKwh} kWh",
@@ -47,6 +48,8 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 sessionId: evt.SessionId,
                 driverId: session.DriverId
             );
+
+            _db.logs.Add( log );
 
             await _db.SaveChangesAsync();
 

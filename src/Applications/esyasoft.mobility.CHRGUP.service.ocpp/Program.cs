@@ -14,8 +14,12 @@ builder.Services.AddHostedService<ChargerWatchdog>();
 
 //builder.Services.AddDbContext<OcppDbContext>(opt =>
 //    opt.UseNpgsql(builder.Configuration["OcppDb:ConnectionString"]));
-builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseNpgsql(builder.Configuration["MainDb:ConnectionString"]));
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DBConnection")
+    );
+});
 
 builder.Services.AddScoped<ChargerAuthService>();
 

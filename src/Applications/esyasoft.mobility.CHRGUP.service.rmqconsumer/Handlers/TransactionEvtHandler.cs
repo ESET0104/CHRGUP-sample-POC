@@ -1,4 +1,5 @@
-﻿using esyasoft.mobility.CHRGUP.service.core.Metadata;
+﻿using esyasoft.mobility.CHRGUP.service.core.Helpers;
+using esyasoft.mobility.CHRGUP.service.core.Metadata;
 using esyasoft.mobility.CHRGUP.service.persistence.Data;
 using esyasoft.mobility.CHRGUP.service.rmqconsumer.DTOs;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +9,9 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
     public class TransactionEvtHandler
     {
         private readonly AppDbContext _db;
-        private readonly ILogger _logger;
+        private readonly ILogger<TransactionEvtHandler> _logger;
         private readonly AuditLogger _logger1;
-        public TransactionEvtHandler(AppDbContext db, ILogger logger, AuditLogger logger1)
+        public TransactionEvtHandler(AppDbContext db, ILogger<TransactionEvtHandler> logger, AuditLogger logger1)
         {
             _db = db;
             _logger = logger;
@@ -43,7 +44,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
             if (charger != null)
                 charger.Status = ChargerStatus.Engaged;
 
-            await _logger1.SaveLogAsync(
+            var log = await _logger1.SaveLogAsync(
                 source: "charger",
                 eventType: "SESSION_STARTED",
                 message: "Charging session started",
@@ -51,6 +52,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 sessionId: evt.SessionId,
                 driverId: session.DriverId
             );
+            _db.logs.Add( log );
 
             await _db.SaveChangesAsync();
         }
@@ -84,7 +86,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
             if (charger != null)
                 charger.Status = ChargerStatus.Available;
 
-            await _logger1.SaveLogAsync(
+            var log = await _logger1.SaveLogAsync(
                 source: "charger",
                 eventType: "SESSION_ENDED",
                 message: "Charging session completed",
@@ -92,6 +94,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 sessionId: evt.SessionId,
                 driverId: session.DriverId
             );
+            _db.logs.Add( log );
 
             await _db.SaveChangesAsync();
         }

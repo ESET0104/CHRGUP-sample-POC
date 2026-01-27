@@ -2,6 +2,7 @@ using DotNetEnv;
 using esyasoft.mobility.CHRGUP.service.api.Infrastructure.Messaging;
 using esyasoft.mobility.CHRGUP.service.api.Interfaces;
 using esyasoft.mobility.CHRGUP.service.api.Services;
+using esyasoft.mobility.CHRGUP.service.core.Helpers;
 using esyasoft.mobility.CHRGUP.service.persistence.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
@@ -38,7 +39,9 @@ builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<IChargingSessionService, ChargingSessionService>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
-builder.Services.AddScoped<IMessagingPublisher, NoOpMessagingPublisher>();
+builder.Services.AddScoped<AuditLogger>();
+
+builder.Services.AddSingleton<RmqPublisher>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

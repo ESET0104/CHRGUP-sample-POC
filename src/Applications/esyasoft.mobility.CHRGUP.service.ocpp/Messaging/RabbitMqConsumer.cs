@@ -177,7 +177,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
 
             var chargerId = root.GetProperty("ChargerId").GetString();
             var sessionId = root.GetProperty("SessionId").GetString();
-            var userId = root.TryGetProperty("UserId", out var u)
+            var userId = root.TryGetProperty("DriverId", out var u)
                 ? u.GetString()
                 : null;
 

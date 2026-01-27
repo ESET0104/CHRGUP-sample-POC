@@ -1,20 +1,10 @@
 ﻿using esyasoft.mobility.CHRGUP.service.core.Models;
-using esyasoft.mobility.CHRGUP.service.persistence.Data;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
+namespace esyasoft.mobility.CHRGUP.service.core.Helpers
 {
     public class AuditLogger
     {
-        private readonly AppDbContext _db;
-        public AuditLogger(AppDbContext db)
-        {
-            _db = db;
-        }
-
-        public async Task SaveLogAsync(
+        public async Task<Log> SaveLogAsync(
             string source,
             string eventType,
             string message,
@@ -25,7 +15,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
             var log = new Log
             {
                 Id = Guid.NewGuid(),
-                Timestamp = DateTime.UtcNow,
+                Timestamp = DateTime.Now,
                 Source = source,
                 EventType = eventType,
                 Message = message,
@@ -34,7 +24,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 DriverId = driverId
             };
 
-            _db.logs.Add(log);
+            return log;
         }
     }
 }

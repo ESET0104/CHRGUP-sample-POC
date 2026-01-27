@@ -46,7 +46,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
                 Gender = dto.Gender,
                 DateOfBirth = dto.DateOfBirth,
                 Status = DriverStatus.Active,
-                CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified),
+                CreatedAt = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified),
                 VehicleId = dto.VehicleId
             };
 
@@ -78,7 +78,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
                 ?? throw new KeyNotFoundException("Driver not found");
 
             driver.Status = status;
-            driver.UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
+            driver.UpdatedAt = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
 
             await _db.SaveChangesAsync();
         }
@@ -99,7 +99,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
                 throw new InvalidOperationException("Vehicle already assigned");
 
             driver.VehicleId = vehicleId;
-            driver.UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
+            driver.UpdatedAt = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
 
             await _db.SaveChangesAsync();
         }

@@ -1,7 +1,8 @@
-﻿using esyasoft.mobility.CHRGUP.service.persistence.Data;
+﻿using esyasoft.mobility.CHRGUP.service.api.Infrastructure.Messaging;
 using esyasoft.mobility.CHRGUP.service.api.Interfaces;
 using esyasoft.mobility.CHRGUP.service.core.Metadata;
 using esyasoft.mobility.CHRGUP.service.core.Models;
+using esyasoft.mobility.CHRGUP.service.persistence.Data;
 using Microsoft.EntityFrameworkCore;
 using NanoidDotNet;
 
@@ -10,10 +11,12 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
     public class ChargerService : IChargerService
     {
         private readonly AppDbContext _db;
+        private readonly RmqPublisher _publisher;
 
-        public ChargerService(AppDbContext db)
+        public ChargerService(AppDbContext db, RmqPublisher publisher)
         {
             _db = db;
+            _publisher = publisher;
         }
 
         public async Task<List<Charger>> GetAllAsync()
@@ -61,5 +64,33 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
             charger.LastSeen = timestamp;
             await _db.SaveChangesAsync();
         }
+
+        //public async Task RemoteStartAsync(string chargerId, StartChargingRequestDto dto)
+        //{
+        //    if (!await _db.chargers.AnyAsync(c => c.Id == chargerId))
+        //        throw new InvalidOperationException("Charger not found");
+
+        //    var command = new RemoteStartCommand
+        //    {
+        //        ChargerId = chargerId,
+        //        //ConnectorId = dto.ConnectorId,
+        //        DriverId = dto.DriverId,
+        //        RequestedAt = DateTime.Now
+        //    };
+
+        //    await _publisher.PublishAsync(command);
+        //}
+
+        //public async Task RemoteStopAsync(string chargerId, StopChargingRequestDto dto)
+        //{
+        //    var command = new RemoteStopCommand
+        //    {
+        //        ChargerId = chargerId,
+        //        SessionId = dto.SessionId,
+        //        RequestedAt = DateTime.Now
+        //    };
+
+        //    await _publisher.PublishAsync(command);
+        //}
     }
 }

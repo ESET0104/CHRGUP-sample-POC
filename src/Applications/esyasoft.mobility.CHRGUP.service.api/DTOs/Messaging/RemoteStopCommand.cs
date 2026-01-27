@@ -4,6 +4,6 @@
     {
         public string ChargerId { get; set; }
         public string SessionId { get; set; }
-        public DateTime RequestedAt { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

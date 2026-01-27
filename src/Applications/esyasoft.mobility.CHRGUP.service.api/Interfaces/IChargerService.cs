@@ -11,8 +11,8 @@ namespace esyasoft.mobility.CHRGUP.service.api.Interfaces
         Task UpdateStatusAsync(string chargerId, ChargerStatus status);
         Task UpdateHeartbeatAsync(string chargerId, DateTime timestamp);
 
-        Task RemoteStartAsync(string chargerId, StartChargingRequestDto dto);
-        Task RemoteStopAsync(string chargerId, StopChargingRequestDto dto);
+        //Task RemoteStartAsync(string chargerId, StartChargingRequestDto dto);
+        //Task RemoteStopAsync(string chargerId, StopChargingRequestDto dto);
     }
 }
 

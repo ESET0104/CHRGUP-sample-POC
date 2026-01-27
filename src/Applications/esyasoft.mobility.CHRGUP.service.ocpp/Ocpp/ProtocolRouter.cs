@@ -54,7 +54,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp
 
             if (protocol == OcppProtocol.V201)
             {
-                await Ocpp201.OcppRouter.RouteAsync(json, chargerId, tenantId, socket);
+                await OcppRouter.RouteAsync(json, chargerId, tenantId, socket);
             }
             else
             {
