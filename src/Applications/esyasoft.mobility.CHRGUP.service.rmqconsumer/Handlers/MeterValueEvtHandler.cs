@@ -36,7 +36,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 evt.Timestamp <= session.LastMeterUpdate)
                 return;
 
-            session.LastMeterUpdate = evt.Timestamp;
+            session.LastMeterUpdate = DbTime.From(evt.Timestamp);
             session.EnergyConsumedKwh = evt.EnergyKwh;
             session.SOC = evt.SOC;
 

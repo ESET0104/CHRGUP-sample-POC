@@ -53,7 +53,8 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201
                     break;
 
                 case "StatusNotification":
-                    StatusNotificationHandler.Handle(
+                    Console.WriteLine("redirected to statnot handler--v201");
+                    await StatusNotificationHandler.Handle(
                         message.Payload,
                         chargePointId);
                     break;

@@ -30,7 +30,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
                 VehicleName = dto.VehicleName,
                 VIN = dto.VIN,
                 RegistrationNumber = dto.RegistrationNumber,
-                MakeandModel = $"{dto.Make} {dto.Model} {dto.Variant}",
+                MakeandModel = dto.MakeandModel,
                 RangeKm = dto.RangeKm,
                 BatteryCapacityKwh = dto.BatteryCapacityKwh,
                 MaxChargeRateKw = dto.MaxChargeRateKw

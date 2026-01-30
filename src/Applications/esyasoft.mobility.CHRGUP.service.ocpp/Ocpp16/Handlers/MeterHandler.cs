@@ -2,6 +2,7 @@
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
 using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
 using System.Text.Json;
+using esyasoft.mobility.CHRGUP.service.core.Helpers;
 
 namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
 {
@@ -45,7 +46,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
             {
                 ChargerId = chargerId,
                 SessionId = sessionId,
-                Timestamp = DateTime.Now,
+                Timestamp = DbTime.From(DateTime.Now),
                 EnergyKwh = energy,
                 SOC = soc
             };

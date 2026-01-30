@@ -16,9 +16,17 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
             WebSocket socket)
         {
             var rfid = payload.GetProperty("idTag").GetString();
-            var evseId = payload.GetProperty("evseId").GetInt32();
+            if (!payload.TryGetProperty("evseId", out var evseEl) ||
+                evseEl.ValueKind != JsonValueKind.Number)
+            {
+                Console.WriteLine("Invalid Authorize payload: missing or invalid evseId");
+                return;
+            }
+
+
+            var evseId = evseEl.GetInt32();
             //
-            AuthRequestStore.Register(messageId, chargerId, 1, socket);
+            AuthRequestStore.Register(messageId, chargerId, evseId, socket);
             //
 
             //VinAuthorizationStore.Register(messageId, socket);

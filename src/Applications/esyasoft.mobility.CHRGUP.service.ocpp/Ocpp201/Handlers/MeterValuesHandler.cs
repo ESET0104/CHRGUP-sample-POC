@@ -1,4 +1,5 @@
 ﻿using DotNetEnv;
+using esyasoft.mobility.CHRGUP.service.core.Helpers;
 using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
 using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
@@ -19,42 +20,40 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
 
             double energy = 0;
             double soc = 0;
-            var sessionId = payload
-            .GetProperty("transactionId")
-            .GetInt32()
-            .ToString();
+            var sessionId = payload.GetProperty("transactionId").GetString();
 
-            foreach (var meterValue in payload
-                .GetProperty("meterValue")
-                .EnumerateArray())
+            foreach (var meterValue in payload.GetProperty("meterValue").EnumerateArray())
             {
-                var timestamp = meterValue
-                    .GetProperty("timestamp")
-                    .GetDateTime();
+                var timestamp = DbTime.From(meterValue.GetProperty("timestamp").GetDateTime());
 
-                foreach (var sampledValue in meterValue
-                    .GetProperty("sampledValue")
-                    .EnumerateArray())
+                foreach (var sampledValue in meterValue.GetProperty("sampledValue").EnumerateArray())
                 {
-                    var measurand = sampledValue
-                        .GetProperty("measurand")
-                        .GetString();
+                    //var measurand = sampledValue.GetProperty("measurand").GetString();
 
-                    if (measurand != "Energy.Active.Import.Register")
-                        continue;
+                    //if (measurand != "Energy.Active.Import.Register")
+                    //    continue;
 
-                    var value = double.Parse(
-                        sampledValue.GetProperty("value").GetString()!
-                    );
+                    //var value = double.Parse(
+                    //    sampledValue.GetProperty("value").GetString()!
+                    //);
+
+                    //if (measurand == "Energy.Active.Import.Register")
+                    //{
+                    //    energy = value;
+                    //}
+                    //if (measurand == "SoC")
+                    //{
+                    //    soc = value;
+                    //}
+
+                    var measurand = sampledValue.GetProperty("measurand").GetString();
+                    var value = double.Parse(sampledValue.GetProperty("value").GetString()!);
 
                     if (measurand == "Energy.Active.Import.Register")
-                    {
                         energy = value;
-                    }
-                    if (measurand == "SoC")
-                    {
+
+                    else if (measurand == "SoC")
                         soc = value;
-                    }
 
                     var meterEvent = new MeterValueEvent
                     {

@@ -44,8 +44,8 @@ namespace esyasoft.mobility.CHRGUP.service.api.Controllers
         [HttpPatch("{id}/assign-vehicle")]
         public async Task<IActionResult> AssignVehicle(string id, AssignVehicleDto dto)
         {
-            await _driverService.AssignVehicleAsync(id, dto.VehicleId);
-            return NoContent();
+            var driver = await _driverService.AssignVehicleAsync(id, dto.VehicleId);
+            return Ok(driver);
         }
     }
 }

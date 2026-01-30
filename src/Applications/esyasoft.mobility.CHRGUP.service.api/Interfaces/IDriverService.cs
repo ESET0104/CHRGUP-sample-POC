@@ -12,6 +12,6 @@ namespace esyasoft.mobility.CHRGUP.service.api.Interfaces
         Task<List<DriverResponseDto>> GetAllAsync();
         Task<DriverResponseDto> GetByIdAsync(string id);
         Task UpdateStatusAsync(string id, DriverStatus status);
-        Task AssignVehicleAsync(string driverId, string vehicleId);
+        Task<Driver> AssignVehicleAsync(string driverId, string vehicleId);
     }
 }

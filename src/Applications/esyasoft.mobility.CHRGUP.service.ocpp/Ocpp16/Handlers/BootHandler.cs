@@ -1,4 +1,5 @@
-﻿using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
+﻿using esyasoft.mobility.CHRGUP.service.core.Helpers;
+using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
 using esyasoft.mobility.CHRGUP.service.ocpp.WebSockets;
 using System.Data;
@@ -28,7 +29,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
                 {
                     ChargerId = chargerId,
                     Protocol = "1.6",
-                    Timestamp = DateTime.Now
+                    Timestamp = DbTime.From(DateTime.Now)
                 });
 
             var response = new object[]

@@ -15,7 +15,7 @@ namespace esyasoft.mobility.CHRGUP.service.core.Helpers
             var log = new Log
             {
                 Id = Guid.NewGuid(),
-                Timestamp = DateTime.Now,
+                Timestamp = DbTime.From(DateTime.Now),
                 Source = source,
                 EventType = eventType,
                 Message = message,

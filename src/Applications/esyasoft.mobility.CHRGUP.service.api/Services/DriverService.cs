@@ -43,6 +43,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
                 FullName = dto.FullName,
                 Email = dto.Email,
                 Password = dto.Password, 
+                RfidTag = Nanoid.Generate(size: 10),
                 Gender = dto.Gender,
                 DateOfBirth = dto.DateOfBirth,
                 Status = DriverStatus.Active,
@@ -83,7 +84,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
             await _db.SaveChangesAsync();
         }
 
-        public async Task AssignVehicleAsync(string driverId, string vehicleId)
+        public async Task<Driver> AssignVehicleAsync(string driverId, string vehicleId)
         {
             var driver = await _db.drivers.FirstOrDefaultAsync(d => d.Id == driverId)
                 ?? throw new KeyNotFoundException("Driver not found");
@@ -102,6 +103,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
             driver.UpdatedAt = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified);
 
             await _db.SaveChangesAsync();
+            return driver;
         }
 
         private static DriverResponseDto Map(Driver d) => new()

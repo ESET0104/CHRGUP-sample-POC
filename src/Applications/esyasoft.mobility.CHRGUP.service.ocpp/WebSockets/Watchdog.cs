@@ -1,4 +1,5 @@
-﻿using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
+﻿using esyasoft.mobility.CHRGUP.service.core.Helpers;
+using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
 
 namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
@@ -56,7 +57,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
                 {
                     ChargerId = chargerId,
                     FaultCode = "PowerLoss",
-                    Timestamp = DateTime.Now
+                    Timestamp = DbTime.From(DateTime.Now)
                 }
             );
         }

@@ -5,6 +5,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 using esyasoft.mobility.CHRGUP.service.ocpp.WebSockets;
+using esyasoft.mobility.CHRGUP.service.core.Helpers;
 
 namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
 {
@@ -166,7 +167,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.WebSockets
                         {
                             ChargerId = _chargePointId,
                             FaultCode = "PowerLoss",
-                            Timestamp = DateTime.Now
+                            Timestamp = DbTime.From(DateTime.Now)
                         }
                     );
                     

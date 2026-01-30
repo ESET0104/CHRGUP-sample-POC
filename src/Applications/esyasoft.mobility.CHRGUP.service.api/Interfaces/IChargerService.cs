@@ -7,7 +7,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Interfaces
     public interface IChargerService
     {
         Task<List<Charger>> GetAllAsync();
-        Task<Charger> RegisterAsync(string locationId);
+        Task<Charger> RegisterAsync(string locationId, string version);
         Task UpdateStatusAsync(string chargerId, ChargerStatus status);
         Task UpdateHeartbeatAsync(string chargerId, DateTime timestamp);
 

@@ -1,4 +1,6 @@
-﻿using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
+﻿using esyasoft.mobility.CHRGUP.service.core.Helpers;
+using esyasoft.mobility.CHRGUP.service.core.Models;
+using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
 using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
 using System.Text.Json;
@@ -11,13 +13,14 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
             JsonElement payload,
             string chargePointId)
         {
+            Console.WriteLine("entered statnot handler--v201");
             HeartbeatStore.Update(chargePointId);
 
-            var evseId = payload.GetProperty("evseId").GetProperty("id").GetInt32();
+            var evseId = payload.GetProperty("evseId").GetInt32();
             //var connectorId = payload.GetProperty("connectorId").GetInt32();
             var status = payload.GetProperty("connectorStatus").GetString();
-            var timestamp = payload.GetProperty("timestamp").GetDateTime();
-
+            var timestamp = DbTime.From(payload.GetProperty("timestamp").GetDateTime());
+            Console.WriteLine($"charger: {chargePointId}; status: {status}");
             string? errorCode = null;
             if (payload.TryGetProperty("errorCode", out var err))
             {
@@ -29,6 +32,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
 
             if (status == "Faulted")
             {
+
                 state.IsFaulted = true;
                 var ev = new ChargerFaultEvent
                 {
@@ -40,6 +44,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
                     "event.charger.faulted",
                     ev
                 );
+                Console.WriteLine($"charger {chargePointId} is being faulted here--v201");
             }
             if (status == "Available")
             {
@@ -53,6 +58,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
                 await RabbitMqEventPublisher.PublishAsync(
                     "event.charger.recovered",ev
                 );
+                Console.WriteLine($"charger {chargePointId} is being recovered here--v201");
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
+﻿using esyasoft.mobility.CHRGUP.service.core.Helpers;
+using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
 using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
 using System.Text.Json;
@@ -9,6 +10,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
     {
         public static async Task Handle(JsonElement payload, string chargerId)
         {
+            var timestamp = DbTime.From(payload.GetProperty("timestamp").GetDateTime());
             var connectorId = payload.GetProperty("connectorId").GetInt32();
             var status = payload.GetProperty("status").GetString();
             var errorCode = payload.TryGetProperty("errorCode", out var err)
@@ -28,12 +30,13 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
                 {
                     ChargerId = chargerId,
                     FaultCode = errorCode ?? "Unknown",
-                    Timestamp = DateTime.Now
+                    Timestamp = timestamp
                 };
 
                 await RabbitMqEventPublisher.PublishAsync(
                     "event.charger.faulted",
                     ev);
+                Console.WriteLine($"charger {chargerId} is being faulted here--v16");
             }
             else if (status == "Available")
             {
@@ -43,11 +46,12 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
                 var ev = new ChargerRecoverEvent
                 {
                     ChargerId = chargerId,
-                    Timestamp = DateTime.Now
+                    Timestamp = timestamp
                 };
                 await RabbitMqEventPublisher.PublishAsync(
                     "event.charger.recovered",
                    ev);
+                Console.WriteLine($"charger {chargerId} is being recovered here--v16");
             }
             else
             {
@@ -58,7 +62,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
                         ChargerId = chargerId,
                         ConnectorId = connectorId,
                         Status = status,
-                        Timestamp = DateTime.Now
+                        Timestamp = DbTime.From(DateTime.Now)
                     });
             }
         }

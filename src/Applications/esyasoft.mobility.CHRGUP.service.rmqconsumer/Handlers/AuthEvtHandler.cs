@@ -50,6 +50,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
             bool accepted =
                 driver != null &&
                 driver.Status == DriverStatus.Active;
+            
 
             await _publisher.PublishAsync(
                 "event.authorization.result",
@@ -67,7 +68,10 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
             );
 
             if (!accepted)
+            {
+                Console.WriteLine("driver error");
                 return;
+            }
 
             var charger = await _db.chargers
                 .FirstOrDefaultAsync(c => c.Id == evt.ChargerId);

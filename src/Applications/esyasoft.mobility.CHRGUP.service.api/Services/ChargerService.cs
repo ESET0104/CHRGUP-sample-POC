@@ -1,5 +1,6 @@
 ﻿using esyasoft.mobility.CHRGUP.service.api.Infrastructure.Messaging;
 using esyasoft.mobility.CHRGUP.service.api.Interfaces;
+using esyasoft.mobility.CHRGUP.service.core.Helpers;
 using esyasoft.mobility.CHRGUP.service.core.Metadata;
 using esyasoft.mobility.CHRGUP.service.core.Models;
 using esyasoft.mobility.CHRGUP.service.persistence.Data;
@@ -12,6 +13,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
     {
         private readonly AppDbContext _db;
         private readonly RmqPublisher _publisher;
+        private static readonly Random random = new Random();
 
         public ChargerService(AppDbContext db, RmqPublisher publisher)
         {
@@ -24,7 +26,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
             return await _db.chargers.ToListAsync();
         }
 
-        public async Task<Charger> RegisterAsync(string locationId)
+        public async Task<Charger> RegisterAsync(string locationId, string version)
         {
             var locationExists = await _db.locations
         .AnyAsync(l => l.Id == locationId);
@@ -32,14 +34,26 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
             if (!locationExists)
                 throw new ArgumentException("Invalid LocationId");
 
+            var config = new ChargerConfig
+            {
+                ChargerId = Nanoid.Generate(size: 10),
+                Manufacturer = "esyasoft",
+                FirmwareVersion = version,
+                InputPower = 10.0 + (random.NextDouble() * (20)),
+                OutputPower = 15.0 + random.NextDouble() * 10,
+                ConnectorType = "Type-1",
+                NoOfPorts = 1
+            };
+
             var charger = new Charger
             {
-                Id = Nanoid.Generate(size: 10),
+                Id = config.ChargerId,
                 Status = ChargerStatus.Available,
                 LastSeen = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Unspecified),
                 LocationId = locationId
             };
 
+            _db.chargerConfigs.Add(config);
             _db.chargers.Add(charger);
             await _db.SaveChangesAsync();
             return charger;
@@ -61,7 +75,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
                 .FirstOrDefaultAsync(c => c.Id == chargerId)
                 ?? throw new KeyNotFoundException("Charger not found");
 
-            charger.LastSeen = timestamp;
+            charger.LastSeen = DbTime.From(timestamp);
             await _db.SaveChangesAsync();
         }
 

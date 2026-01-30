@@ -25,7 +25,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 Id = Nanoid.Generate(size: 10),
                 ChargerId = evt.ChargerId,
                 FaultCode = evt.FaultCode,
-                Timestamp = evt.Timestamp
+                Timestamp = DbTime.From(evt.Timestamp)
             };
 
             _db.faults.Add(fault);
@@ -49,8 +49,10 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
             if (activeSession != null)
             {
                 activeSession.Status = SessionStatus.Faulted;
-                activeSession.EndTime = evt.Timestamp;
+                activeSession.EndTime = DbTime.From(evt.Timestamp);
             }
+
+            Console.WriteLine($"charger {evt.ChargerId} is faulted");
 
             var log = await _logger.SaveLogAsync(
                 source: "ocpp",
@@ -70,12 +72,20 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
         {
             var charger = await _db.chargers
                 .FirstOrDefaultAsync(c => c.Id == evt.ChargerId);
+            Console.WriteLine($"DB Status before update: {charger.Status}");
 
             if (charger != null)
             {
+                Console.WriteLine($"charger {evt.ChargerId} is found");
                 charger.Status = ChargerStatus.Available;
-                charger.LastSeen = evt.Timestamp;
+                charger.LastSeen = DbTime.From(evt.Timestamp);
+                Console.WriteLine($"{charger.Status}");
             }
+            else
+            {
+                Console.WriteLine($"charger {evt.ChargerId} is not found");
+            }
+                Console.WriteLine($"entered charger {evt.ChargerId} recovery handler");
 
             var log = await _logger.SaveLogAsync(
                 source: "ocpp",

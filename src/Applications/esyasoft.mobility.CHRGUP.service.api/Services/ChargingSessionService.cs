@@ -149,7 +149,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
                 ChargerId = chargerId,
                 SessionId = session.Id,
                 DriverId = driverId,
-                Timestamp = DateTime.Now
+                Timestamp = DbTime.From(DateTime.Now)
             };
 
             await _publisher.PublishAsync("command.start", command);
@@ -186,7 +186,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
             {
                 ChargerId = session.ChargerId,
                 SessionId = sessionId,
-                Timestamp = DateTime.Now
+                Timestamp = DbTime.From(DateTime.Now)
             };
 
             await _publisher.PublishAsync("command.stop", command);

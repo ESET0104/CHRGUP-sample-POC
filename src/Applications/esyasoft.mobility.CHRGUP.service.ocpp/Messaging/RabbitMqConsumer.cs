@@ -40,14 +40,14 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
             _channel.QueueBindAsync(
             queue: queueName,
             exchange: exchangeName,
-            routingKey: "vin.authorization.result"
+            routingKey: "event.authorization.result"
             );
 
-            _channel.QueueBindAsync(
-            queue: queueName,
-            exchange: exchangeName,
-            routingKey: "rfid.authorization.result"
-            );
+            //_channel.QueueBindAsync(
+            //queue: queueName,
+            //exchange: exchangeName,
+            //routingKey: "rfid.authorization.result"
+            //);
 
             //_channel.QueueBindAsync(
             //    queue: queueName,
@@ -149,7 +149,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
             //    return;
             //}
 
-            if (routingKey == "vin.authorization.result" || routingKey == "rfid.authorization.result")
+            if (routingKey == "event.authorization.result")
             {
                 var messageId = root.GetProperty("MessageId").GetString();
                 var accepted = root.GetProperty("Accepted").GetBoolean();
