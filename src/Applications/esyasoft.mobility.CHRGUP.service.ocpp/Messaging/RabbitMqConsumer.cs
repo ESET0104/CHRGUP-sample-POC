@@ -284,7 +284,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
                 //    Console.WriteLine("Cannot start: session already active");
                 //    return;
                 //}
-
+                state.ActiveSessionId = sessionId;
                 await SendOcppCommand(socket, "RemoteStartTransaction", new
                 {
                     idTag = userId,

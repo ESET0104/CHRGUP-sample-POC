@@ -1,4 +1,5 @@
 ﻿using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
+using esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
 using System.Net.WebSockets;
 using System.Text;
@@ -21,6 +22,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
                 evseEl.ValueKind != JsonValueKind.Number)
             {
                 Console.WriteLine("Invalid Authorize payload: missing or invalid evseId");
+                Ocpp16Message.SendAuthorizeResult(socket, messageId, false);
                 return;
             }
 

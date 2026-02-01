@@ -18,6 +18,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201
             switch (message.Action)
             {
                 case "BootNotification":
+                    Console.WriteLine("redirected to bootnot handler--v201");
                     await BootNotificationHandler.Handle(
                         chargePointId,
                         message.MessageId,
@@ -25,6 +26,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201
                     break;
 
                 case "Authorize":
+                    Console.WriteLine("redirected to auth handler--v201");
                     await AuthorizeHandler.Handle(
                         message.MessageId,
                         //payload,
@@ -34,6 +36,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201
                     break;
 
                 case "Heartbeat":
+                    Console.WriteLine("redirected to heartbeat handler--v201");
                     await HeartbeatHandler.Handle(
                         message.MessageId,
                         chargePointId,
@@ -41,12 +44,14 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201
                     break;
 
                 case "TransactionEvent":
+                    Console.WriteLine("redirected to transevt handler--v201");
                     await TransactionEventHandler.Handle(
                         message.Payload,
                         chargePointId);
                     break;
 
                 case "MeterValues":
+                    Console.WriteLine("redirected to mv handler--v201");
                     await MeterValuesHandler.Handle(
                         message.Payload,
                         chargePointId);

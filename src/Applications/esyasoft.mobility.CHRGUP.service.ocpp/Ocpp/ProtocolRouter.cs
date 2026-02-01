@@ -54,10 +54,12 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp
 
             if (protocol == OcppProtocol.V201)
             {
+                Console.WriteLine($"routing to v201 {action} handler");
                 await OcppRouter.RouteAsync(json, chargerId, tenantId, socket);
             }
             else
             {
+                Console.WriteLine($"routing to v16 {action} handler");
                 await Ocpp16Router.RouteAsync(json, chargerId, tenantId, socket);
             }
 

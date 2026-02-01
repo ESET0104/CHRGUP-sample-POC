@@ -20,9 +20,9 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
         public async Task HandleSessionStarted(SessionStartEvent evt)
         {
             var session = await _db.chargingSessions
-                .FirstOrDefaultAsync(s => s.Id == evt.SessionId);
+                .FirstOrDefaultAsync(s => s.ChargerId == evt.ChargerId && s.Status == SessionStatus.Pending);
 
-            if (session == null || session.Status != SessionStatus.Pending)
+            if (session == null)
                 return;
 
             if (session.ChargerId != evt.ChargerId)

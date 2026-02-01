@@ -33,7 +33,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
             //
             await RabbitMqEventPublisher.PublishAsync(
                 //"rfid.authorization.request",
-                "authorization.request",
+                "event.authorization.request",
                 new
                 {
                     ChargerId = chargerId,

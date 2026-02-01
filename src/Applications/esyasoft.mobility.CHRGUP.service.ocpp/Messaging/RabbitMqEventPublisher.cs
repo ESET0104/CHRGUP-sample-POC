@@ -34,7 +34,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Messaging
                 body: body,
                 cancellationToken: CancellationToken.None
             );
-            Console.WriteLine("published from ocpp");
+            Console.WriteLine($"published from ocpp; r.k : {routingKey} ");
         }
     }
 }

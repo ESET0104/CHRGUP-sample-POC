@@ -22,26 +22,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
             var transactionInfo = payload.GetProperty("transactionInfo");
             var sessionId = transactionInfo.GetProperty("sessionId").GetString();
             var userId = transactionInfo.GetProperty("userId").GetString();
-
-
-
-            //
-            //var evseId = payload.GetProperty("evse").GetProperty("id").GetInt32();
-            //var vin = payload.GetProperty("idTag").GetString();
-            //
-            
-
-            var soc = transactionInfo.TryGetProperty("soc", out var s)
-                ? s.GetDouble()
-                : 0;
-
-            //string? userId = null;
-            //if (payload.TryGetProperty("idToken", out var token))
-            //{
-            //    userId = token.GetProperty("value").GetString();
-            //}
-
-
+            var soc = transactionInfo.TryGetProperty("soc", out var s)? s.GetDouble(): 0;
 
             if (eventType == "Started")
             {
@@ -53,7 +34,6 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
                     StartTime = timestamp,
                     SOC = soc
                 };
-
 
                 await RabbitMqEventPublisher.PublishAsync("event.session.started",TransactionStart);
             }
@@ -76,12 +56,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
                     SOC = soc
                 };
 
-
-
-
                 await RabbitMqEventPublisher.PublishAsync("event.session.stopped",TransactionStop);
-
-
             }
         }
     }
