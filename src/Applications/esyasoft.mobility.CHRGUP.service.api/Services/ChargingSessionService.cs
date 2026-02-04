@@ -70,6 +70,10 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
         //}
 
 
+        //public async Task<List<ChargingSessionResponseDto>> GetAllAsync()
+        //{
+        //    return await _db.chargingSessions.ToListAsync();
+        //}
         public async Task<ChargingSessionResponseDto> GetByIdAsync(string sessionId)
         {
             var session = await _db.chargingSessions.FindAsync(sessionId)

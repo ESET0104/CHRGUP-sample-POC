@@ -1,6 +1,7 @@
 using DotNetEnv;
 using esyasoft.mobility.CHRGUP.service.core.Helpers;
 using esyasoft.mobility.CHRGUP.service.persistence.Data;
+using esyasoft.mobility.CHRGUP.service.persistence.Notifications;
 using esyasoft.mobility.CHRGUP.service.rmqconsumer;
 using esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers;
 using esyasoft.mobility.CHRGUP.service.rmqconsumer.Messaging;
@@ -26,6 +27,8 @@ builder.Services.AddSingleton<RmqPublisher>();
 builder.Services.AddSingleton<RmqConsumer>();
 
 builder.Services.AddHostedService<Worker>();
+builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+
 
 var host = builder.Build();
 host.Run();
