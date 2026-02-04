@@ -1,13 +1,17 @@
-﻿using esyasoft.mobility.CHRGUP.service.api.DTOs.Log;
+﻿using esyasoft.mobility.CHRGUP.service.api.DTOs.Common;
+using esyasoft.mobility.CHRGUP.service.api.DTOs.Log;
 
 namespace esyasoft.mobility.CHRGUP.service.api.Interfaces
 {
-    public interface ILogService
-    {
-        Task<List<LogResponseDto>> GetAllAsync();
-        Task<LogResponseDto> GetByIdAsync(Guid id);
-        Task<List<LogResponseDto>> GetBySessionIdAsync(string sessionId);
-        Task<List<LogResponseDto>> GetByChargerIdAsync(string chargerId);
-        Task<List<LogResponseDto>> GetByDriverIdAsync(string driverId);
+        public interface ILogService
+        {
+            Task<PaginatedResponseDto<LogResponseDto>> GetPagedAsync(
+                int page,
+                int pageSize,
+                string? sessionId,
+                string? chargerId,
+                string? driverId);
+
+            Task<LogResponseDto> GetByIdAsync(Guid id);
+        }
     }
-}
