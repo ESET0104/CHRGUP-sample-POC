@@ -1,8 +1,12 @@
+using DotNetEnv;
 using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
+using esyasoft.mobility.CHRGUP.service.ocpp.Services;
 using esyasoft.mobility.CHRGUP.service.ocpp.WebSockets;
 using esyasoft.mobility.CHRGUP.service.persistence.Data;
-using esyasoft.mobility.CHRGUP.service.ocpp.Services;
 using Microsoft.EntityFrameworkCore;
+
+Env.Load("../../../.env");
+
 
 var builder = WebApplication.CreateBuilder(args);
 

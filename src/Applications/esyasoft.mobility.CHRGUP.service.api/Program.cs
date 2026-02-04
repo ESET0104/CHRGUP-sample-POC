@@ -7,7 +7,7 @@ using esyasoft.mobility.CHRGUP.service.persistence.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
-Env.Load();
+Env.Load("../../../.env");
 
 var builder = WebApplication.CreateBuilder(args);
 

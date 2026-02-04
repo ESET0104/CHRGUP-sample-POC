@@ -1,9 +1,12 @@
+using DotNetEnv;
 using esyasoft.mobility.CHRGUP.service.core.Helpers;
 using esyasoft.mobility.CHRGUP.service.persistence.Data;
 using esyasoft.mobility.CHRGUP.service.rmqconsumer;
 using esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers;
 using esyasoft.mobility.CHRGUP.service.rmqconsumer.Messaging;
 using Microsoft.EntityFrameworkCore;
+
+Env.Load("../../../.env");
 
 var builder = Host.CreateApplicationBuilder(args);
 

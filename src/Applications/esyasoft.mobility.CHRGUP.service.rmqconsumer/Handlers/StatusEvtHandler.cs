@@ -11,7 +11,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
     public class StatusEvtHandler
     {
         private readonly AppDbContext _db;
-        private readonly AuditLogger _logger; 
+        private readonly AuditLogger _logger;
         public StatusEvtHandler(AppDbContext db, AuditLogger logger)
         {
             _db = db;
@@ -25,6 +25,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 Id = Nanoid.Generate(size: 10),
                 ChargerId = evt.ChargerId,
                 FaultCode = evt.FaultCode,
+                Severity = evt.Severity,
                 Timestamp = DbTime.From(evt.Timestamp)
             };
 
@@ -62,7 +63,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 sessionId: activeSession?.Id,
                 driverId: activeSession?.DriverId
             );
-            _db.logs.Add( log );
+            _db.logs.Add(log);
 
             await _db.SaveChangesAsync();
         }
@@ -85,7 +86,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
             {
                 Console.WriteLine($"charger {evt.ChargerId} is not found");
             }
-                Console.WriteLine($"entered charger {evt.ChargerId} recovery handler");
+            Console.WriteLine($"entered charger {evt.ChargerId} recovery handler");
 
             var log = await _logger.SaveLogAsync(
                 source: "ocpp",
@@ -93,7 +94,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 message: "Charger recovered",
                 chargerId: evt.ChargerId
             );
-            _db.logs.Add( log );
+            _db.logs.Add(log);
 
             await _db.SaveChangesAsync();
         }
