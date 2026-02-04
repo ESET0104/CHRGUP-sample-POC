@@ -1,6 +1,7 @@
 ﻿using esyasoft.mobility.CHRGUP.service.api.DTOs.Charger;
 using esyasoft.mobility.CHRGUP.service.api.DTOs.Messaging;
 using esyasoft.mobility.CHRGUP.service.api.Interfaces;
+using esyasoft.mobility.CHRGUP.service.api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace esyasoft.mobility.CHRGUP.service.api.Controllers
@@ -15,6 +16,12 @@ namespace esyasoft.mobility.CHRGUP.service.api.Controllers
         {
             _service = service;
         }
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    return Ok(await _service.GetAllAsync());
+        //}
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
