@@ -1,4 +1,5 @@
 ﻿using esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers;
+using esyasoft.mobility.CHRGUP.service.ocpp.State;
 using System.Net.WebSockets;
 using System.Text.Json;
 
@@ -15,6 +16,16 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201
         {
             var message = OcppMessage.Parse(json);
 
+            if (message.MessageType == 3 || message.MessageType == 4) 
+            {
+
+                if (RequestStore.TryTake(message.MessageId, out var pending))
+                {
+                    await OcppMessage.HandleCallResult(pending, message.Payload);
+                }
+                return;
+            }
+
             switch (message.Action)
             {
                 case "BootNotification":
@@ -29,7 +40,6 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201
                     Console.WriteLine("redirected to auth handler--v201");
                     await AuthorizeHandler.Handle(
                         message.MessageId,
-                        //payload,
                         message.Payload,
                         chargePointId,
                         socket);
@@ -46,26 +56,32 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201
                 case "TransactionEvent":
                     Console.WriteLine("redirected to transevt handler--v201");
                     await TransactionEventHandler.Handle(
+                        message.MessageId,
                         message.Payload,
-                        chargePointId);
+                        chargePointId,
+                        socket);
                     break;
 
                 case "MeterValues":
                     Console.WriteLine("redirected to mv handler--v201");
                     await MeterValuesHandler.Handle(
+                        message.MessageId,
                         message.Payload,
-                        chargePointId);
+                        chargePointId,
+                        socket);
                     break;
 
                 case "StatusNotification":
                     Console.WriteLine("redirected to statnot handler--v201");
                     await StatusNotificationHandler.Handle(
+                        message.MessageId,
                         message.Payload,
-                        chargePointId);
+                        chargePointId,
+                        socket);
                     break;
             }
         }
 
     }
 
-    }
+}

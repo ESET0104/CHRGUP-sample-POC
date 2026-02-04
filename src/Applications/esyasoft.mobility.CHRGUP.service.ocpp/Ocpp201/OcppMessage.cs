@@ -1,4 +1,8 @@
-﻿using System.Text.Json;
+﻿using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
+using esyasoft.mobility.CHRGUP.service.ocpp.State;
+using System.Net.WebSockets;
+using System.Text;
+using System.Text.Json;
 namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201
 {
     public class OcppMessage
@@ -12,13 +16,29 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201
         {
             var arr = JsonSerializer.Deserialize<JsonElement[]>(json);
 
-            return new OcppMessage
+            var messageType = arr[0].GetInt32();
+
+            if(messageType == 2)
             {
-                MessageType = arr[0].GetInt32(),
-                MessageId = arr[1].GetString(),
-                Action = arr[2].GetString(),
-                Payload = arr[3]
-            };
+                return new OcppMessage
+                {
+                    MessageType = arr[0].GetInt32(),
+                    MessageId = arr[1].GetString(),
+                    Action = arr[2].GetString(),
+                    Payload = arr[3]
+                };
+            }
+
+            else
+            {
+                return new OcppMessage
+                {
+                    MessageType = arr[0].GetInt32(),
+                    MessageId = arr[1].GetString(),
+                    Payload = arr[2]
+                };
+            }
+            
         }
 
         public static string CreateCallResult(string messageId, object payload)
@@ -40,6 +60,63 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201
                 action,
                 payload
             });
+        }
+
+        public static string CreateCallError(string messageId, object payload)
+        {
+            return JsonSerializer.Serialize(new object[]
+            {
+                4,
+                messageId,
+                payload
+            });
+        }
+
+        public static async Task SendCallResult(
+            WebSocket socket,
+            string messageId,
+            object payload)
+        {
+            var message = new object[]
+            {
+                3,
+                messageId,
+                payload
+            };
+
+            var bytes = Encoding.UTF8.GetBytes(
+                JsonSerializer.Serialize(message));
+
+            await socket.SendAsync(
+                bytes,
+                WebSocketMessageType.Text,
+                true,
+                CancellationToken.None);
+        }
+
+        public static async Task HandleCallResult(PendingOcppRequest pending, JsonElement payload)
+        {
+            bool accepted = true;
+
+            if (payload.TryGetProperty("status", out var statusProp))
+            {
+                accepted = statusProp.GetString() == "Accepted";
+            }
+
+            var ev = new
+            {
+                pending.ChargerId,
+                pending.SessionId,
+                Accepted = accepted,
+                Timestamp = DateTime.Now
+            };
+
+            await RabbitMqEventPublisher.PublishAsync(
+                pending.Type == PendingOcppRequestType.RemoteStart
+                    ? "event.remotestart.result"
+                    : "event.remotestop.result",
+                ev
+            );
         }
     }
 }

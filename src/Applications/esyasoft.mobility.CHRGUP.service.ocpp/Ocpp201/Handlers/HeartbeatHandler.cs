@@ -11,18 +11,23 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
             string messageId, string chargePointId, WebSocket socket)
         {
             HeartbeatStore.Update(chargePointId);
-            var response = new object[]
-            {
-                3,
-                messageId,
-                new { currentTime = DateTime.Now }
-            };
 
-            await socket.SendAsync(
-                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response)),
-                WebSocketMessageType.Text,
-                true,
-                CancellationToken.None);
+            await OcppMessage.SendCallResult(socket, messageId, new
+            {
+                currentTime = DateTime.Now
+            });
+            //var response = new object[]
+            //{
+            //    3,
+            //    messageId,
+            //    new { currentTime = DateTime.Now }
+            //};
+
+            //await socket.SendAsync(
+            //    Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response)),
+            //    WebSocketMessageType.Text,
+            //    true,
+            //    CancellationToken.None);
         }
     }
 }

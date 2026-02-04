@@ -2,6 +2,7 @@
 using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
 using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
+using System.Net.WebSockets;
 using System.Text.Json;
 
 namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
@@ -11,8 +12,10 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
         
 
         public static async Task Handle(
+            string messageId,
             JsonElement payload,
-            string chargePointId)
+            string chargePointId,
+            WebSocket socket)
         {
             HeartbeatStore.Update(chargePointId);
             var eventType = payload.GetProperty("eventType").GetString();
@@ -23,6 +26,11 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
             var sessionId = transactionInfo.GetProperty("sessionId").GetString();
             var userId = transactionInfo.GetProperty("userId").GetString();
             var soc = transactionInfo.TryGetProperty("soc", out var s)? s.GetDouble(): 0;
+
+            await OcppMessage.SendCallResult(socket, messageId, new
+            {
+                idTagInfo = new { status = "Accepted" }
+            });
 
             if (eventType == "Started")
             {

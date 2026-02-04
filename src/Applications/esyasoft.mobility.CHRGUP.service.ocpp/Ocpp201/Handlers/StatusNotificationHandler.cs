@@ -3,6 +3,7 @@ using esyasoft.mobility.CHRGUP.service.core.Models;
 using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
 using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
+using System.Net.WebSockets;
 using System.Text.Json;
 
 namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
@@ -10,8 +11,10 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
     public static class StatusNotificationHandler
     {
         public static async Task Handle(
+            string messageId,
             JsonElement payload,
-            string chargePointId)
+            string chargePointId,
+            WebSocket socket)
         {
             Console.WriteLine("entered statnot handler--v201");
             HeartbeatStore.Update(chargePointId);
@@ -55,6 +58,9 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
                     ChargerId = chargePointId,
                     Timestamp = timestamp
                 };
+
+                await OcppMessage.SendCallResult(socket, messageId, new { });
+
                 await RabbitMqEventPublisher.PublishAsync(
                     "event.charger.recovered",ev
                 );

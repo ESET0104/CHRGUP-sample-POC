@@ -22,7 +22,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
                 evseEl.ValueKind != JsonValueKind.Number)
             {
                 Console.WriteLine("Invalid Authorize payload: missing or invalid evseId");
-                Ocpp16Message.SendAuthorizeResult(socket, messageId, false);
+                Ocpp201Message.SendAuthorizeResult(socket, messageId, false);
                 return;
             }
 

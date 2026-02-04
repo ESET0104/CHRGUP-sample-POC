@@ -24,39 +24,45 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
             ChargerProtocolStore.MarkBooted(chargePointId);
 
             //
-            await RabbitMqEventPublisher.PublishAsync(
-            "event.charger.connected",
-            new
-            {
-            ChargerId = chargePointId,
-            Protocol = "2.0.1",
-            Timestamp = DbTime.From(DateTime.Now)
-            });
+            //await RabbitMqEventPublisher.PublishAsync(
+            //"event.charger.connected",
+            //new
+            //{
+            //ChargerId = chargePointId,
+            //Protocol = "2.0.1",
+            //Timestamp = DbTime.From(DateTime.Now)
+            //});
             //
-
-            var response = new object[]
+            await OcppMessage.SendCallResult(socket, messageId, new
             {
-                3,
-                messageId,
-                new
-                {
-                    status = "Accepted",
-                    currentTime = DateTime.Now,
-                    interval = 5
-                }
-            };
+                status = "Accepted",
+                currentTime = DateTime.Now,
+                interval = 10
+            });
+
+            //var response = new object[]
+            //{
+            //    3,
+            //    messageId,
+            //    new
+            //    {
+            //        status = "Accepted",
+            //        currentTime = DateTime.Now,
+            //        interval = 5
+            //    }
+            //};
 
 
 
-            var json = JsonSerializer.Serialize(response);
-            var bytes = Encoding.UTF8.GetBytes(json);
+            //var json = JsonSerializer.Serialize(response);
+            //var bytes = Encoding.UTF8.GetBytes(json);
 
-            await socket.SendAsync(
-                bytes,
-                WebSocketMessageType.Text,
-                true,
-                CancellationToken.None
-            );
+            //await socket.SendAsync(
+            //    bytes,
+            //    WebSocketMessageType.Text,
+            //    true,
+            //    CancellationToken.None
+            //);
 
             
         }

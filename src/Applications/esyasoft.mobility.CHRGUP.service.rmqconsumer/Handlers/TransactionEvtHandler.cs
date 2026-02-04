@@ -1,5 +1,6 @@
 ﻿using esyasoft.mobility.CHRGUP.service.core.Helpers;
 using esyasoft.mobility.CHRGUP.service.core.Metadata;
+using esyasoft.mobility.CHRGUP.service.core.Models;
 using esyasoft.mobility.CHRGUP.service.persistence.Data;
 using esyasoft.mobility.CHRGUP.service.rmqconsumer.DTOs;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,62 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
             _db = db;
             _logger = logger;
             _logger1 = logger1;
+        }
+
+        public async Task HandleRemoteStartResult(StartStopEvent evt)
+        {
+            var session = await _db.chargingSessions
+                .FirstOrDefaultAsync(s => s.Id == evt.SessionId);
+
+            var charger = await _db.chargers.FirstOrDefaultAsync(c => c.Id == evt.ChargerId);
+
+            if (session == null|| charger == null)
+            {
+                _logger.LogWarning(
+                    "Invalid result"
+                );
+                return;
+            }
+
+            var log = await _logger1.SaveLogAsync(
+                source: "charger",
+                eventType: "Remote Start result",
+                message: evt.Message,
+                chargerId: evt.ChargerId,
+                sessionId: evt.SessionId,
+                driverId: session.DriverId
+            );
+            _db.logs.Add(log);
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task HandleRemoteStopResult(StartStopEvent evt)
+        {
+            var session = await _db.chargingSessions
+                .FirstOrDefaultAsync(s => s.Id == evt.SessionId);
+
+            var charger = await _db.chargers.FirstOrDefaultAsync(c => c.Id == evt.ChargerId);
+
+            if (session == null || charger == null)
+            {
+                _logger.LogWarning(
+                    "Invalid result"
+                );
+                return;
+            }
+
+            var log = await _logger1.SaveLogAsync(
+                source: "charger",
+                eventType: "Remote Stop result",
+                message: evt.Message,
+                chargerId: evt.ChargerId,
+                sessionId: evt.SessionId,
+                driverId: session.DriverId
+            );
+            _db.logs.Add(log);
+
+            await _db.SaveChangesAsync();
         }
         public async Task HandleSessionStarted(SessionStartEvent evt)
         {

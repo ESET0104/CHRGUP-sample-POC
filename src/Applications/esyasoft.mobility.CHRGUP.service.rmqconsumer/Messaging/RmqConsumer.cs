@@ -82,11 +82,25 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Messaging
 
                     switch (args.RoutingKey)
                     {
+                        case "event.remotestart.result":
+                            var StartRespService = scope.ServiceProvider.GetRequiredService<TransactionEvtHandler>();
+                            var startRes = JsonSerializer.Deserialize<StartStopEvent>(json) ??
+                            throw new InvalidOperationException("Invalid SessionStartEvent payload");
+                            await StartRespService.HandleRemoteStartResult(startRes);
+                            break;
+
                         case "event.session.started":
                             var Startservice = scope.ServiceProvider.GetRequiredService<TransactionEvtHandler>();
                             var started = JsonSerializer.Deserialize<SessionStartEvent>(json) ?? 
                             throw new InvalidOperationException("Invalid SessionStartEvent payload");
                             await Startservice.HandleSessionStarted(started);
+                            break;
+
+                        case "event.remotestop.result":
+                            var StopRespService = scope.ServiceProvider.GetRequiredService<TransactionEvtHandler>();
+                            var stopRes = JsonSerializer.Deserialize<StartStopEvent>(json) ??
+                            throw new InvalidOperationException("Invalid SessionStartEvent payload");
+                            await StopRespService.HandleRemoteStartResult(stopRes);
                             break;
 
                         case "event.session.stopped":

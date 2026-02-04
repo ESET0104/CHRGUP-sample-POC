@@ -3,6 +3,8 @@ using esyasoft.mobility.CHRGUP.service.core.Helpers;
 using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
 using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
+using System.Net.Sockets;
+using System.Net.WebSockets;
 using System.Text.Json;
 
 namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
@@ -10,8 +12,10 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
     public static class MeterValuesHandler
     {
         public static async Task Handle(
+            string messageId,
             JsonElement payload,
-            string chargePointId)
+            string chargePointId,
+            WebSocket socket)
         {
 
 
@@ -54,6 +58,8 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201.Handlers
 
                     else if (measurand == "SoC")
                         soc = value;
+
+                    await OcppMessage.SendCallResult(socket, messageId, new{});
 
                     var meterEvent = new MeterValueEvent
                     {

@@ -33,7 +33,6 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp
                 return;
             }
 
-            // Detect protocol only once (BootNotification)
             if (doc.RootElement[2].GetString() == "BootNotification")
             {
                 ChargerProtocolStore.MarkBooted(chargerId);

@@ -1,8 +1,9 @@
-﻿using System.Text.Json;
-using System.Net.WebSockets;
+﻿using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
+using esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
-using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
+using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 
 
 namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
@@ -20,19 +21,14 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
                 evseEl.ValueKind != JsonValueKind.Number)
             {
                 Console.WriteLine("Invalid Authorize payload: missing or invalid evseId");
+                Ocpp16Message.SendAuthorizeResult(socket, messageId, false);
                 return;
             }
-
-
             var evseId = evseEl.GetInt32();
-            //
-            AuthRequestStore.Register(messageId, chargerId, evseId, socket);
-            //
 
-            //VinAuthorizationStore.Register(messageId, socket);
-            //
+            AuthRequestStore.Register(messageId, chargerId, evseId, socket);
+
             await RabbitMqEventPublisher.PublishAsync(
-                //"rfid.authorization.request",
                 "event.authorization.request",
                 new
                 {
