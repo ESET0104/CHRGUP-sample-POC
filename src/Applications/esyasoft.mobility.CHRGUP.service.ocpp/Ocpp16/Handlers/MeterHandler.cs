@@ -88,7 +88,7 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
             {
                 ChargerId = chargerId,
                 SessionId = sessionId,
-                Timestamp = DbTime.From(DateTime.UtcNow),
+                Timestamp = DbTime.From(DateTime.Now),
                 EnergyKwh = energy,
                 SOC = soc
             };
