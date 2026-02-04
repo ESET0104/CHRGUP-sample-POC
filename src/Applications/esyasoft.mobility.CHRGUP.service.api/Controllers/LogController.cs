@@ -14,22 +14,21 @@ namespace esyasoft.mobility.CHRGUP.service.api.Controllers
             _logService = logService;
         }
 
+        // GET /api/logs?page=1&pageSize=20&chargerId=CHG001
         [HttpGet]
         public async Task<IActionResult> Get(
-            [FromQuery] string? sessionId,
-            [FromQuery] string? chargerId,
-            [FromQuery] string? driverId)
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20,
+            [FromQuery] string? sessionId = null,
+            [FromQuery] string? chargerId = null,
+            [FromQuery] string? driverId = null)
         {
-            if (!string.IsNullOrEmpty(sessionId))
-                return Ok(await _logService.GetBySessionIdAsync(sessionId));
-
-            if (!string.IsNullOrEmpty(chargerId))
-                return Ok(await _logService.GetByChargerIdAsync(chargerId));
-
-            if (!string.IsNullOrEmpty(driverId))
-                return Ok(await _logService.GetByDriverIdAsync(driverId));
-
-            return Ok(await _logService.GetAllAsync());
+            return Ok(await _logService.GetPagedAsync(
+                page,
+                pageSize,
+                sessionId,
+                chargerId,
+                driverId));
         }
 
         [HttpGet("{id:guid}")]

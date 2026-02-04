@@ -77,16 +77,7 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
 
         public async Task HandleChargerFault(ChargerFaultEvent evt)
         {
-            var fault = new Fault
-            {
-                Id = Nanoid.Generate(size: 10),
-                ChargerId = evt.ChargerId,
-                FaultCode = evt.FaultCode,
-                Severity = evt.Severity,
-                Timestamp = DbTime.From(evt.Timestamp)
-            };
-
-            _db.faults.Add(fault);
+            
 
             var charger = await _db.chargers
                 .FirstOrDefaultAsync(c => c.Id == evt.ChargerId);
@@ -95,6 +86,17 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
             {
                 charger.Status = ChargerStatus.Faulted;
                 charger.LastSeen = DateTime.Now;
+
+                var fault = new Fault
+                {
+                    Id = Nanoid.Generate(size: 10),
+                    ChargerId = evt.ChargerId,
+                    FaultCode = evt.FaultCode,
+                    Severity = evt.Severity,
+                    Timestamp = DbTime.From(evt.Timestamp)
+                };
+
+                _db.faults.Add(fault);
             }
 
             var activeSession = await _db.chargingSessions
@@ -109,6 +111,8 @@ namespace esyasoft.mobility.CHRGUP.service.rmqconsumer.Handlers
                 activeSession.Status = SessionStatus.Faulted;
                 activeSession.EndTime = DbTime.From(evt.Timestamp);
             }
+
+            
 
             Console.WriteLine($"charger {evt.ChargerId} is faulted");
 
@@ -154,11 +158,12 @@ Please investigate immediately.";
         {
             var charger = await _db.chargers
                 .FirstOrDefaultAsync(c => c.Id == evt.ChargerId);
-            Console.WriteLine($"DB Status before update: {charger.Status}");
+            
 
             if (charger != null)
             {
                 Console.WriteLine($"charger {evt.ChargerId} is found");
+                Console.WriteLine($"DB Status before update: {charger.Status}");
                 charger.Status = ChargerStatus.Available;
                 charger.LastSeen = DbTime.From(evt.Timestamp);
                 Console.WriteLine($"{charger.Status}");
