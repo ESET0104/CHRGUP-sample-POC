@@ -5,6 +5,7 @@ using esyasoft.mobility.CHRGUP.service.core.Metadata;
 using esyasoft.mobility.CHRGUP.service.core.Models;
 using Microsoft.EntityFrameworkCore;
 using NanoidDotNet;
+using esyasoft.mobility.CHRGUP.service.api.Infrastructure.Security;
 
 namespace esyasoft.mobility.CHRGUP.service.api.Services
 {
@@ -42,7 +43,7 @@ namespace esyasoft.mobility.CHRGUP.service.api.Services
                 Id = Nanoid.Generate(size: 10),
                 FullName = dto.FullName,
                 Email = dto.Email,
-                Password = dto.Password, 
+                Password = PasswordHasher.Hash(dto.Password),
                 RfidTag = Nanoid.Generate(size: 10),
                 Gender = dto.Gender,
                 DateOfBirth = dto.DateOfBirth,

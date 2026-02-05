@@ -10,7 +10,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
     public AppDbContext CreateDbContext(string[] args)
     {
-        Env.Load("../../.env");
+        Env.Load("../../../.env");
         var cs = Environment.GetEnvironmentVariable("ConnectionStrings__DBConnection");
 
         if (string.IsNullOrWhiteSpace(cs))

@@ -4,10 +4,13 @@ using esyasoft.mobility.CHRGUP.service.api.Interfaces;
 using esyasoft.mobility.CHRGUP.service.api.Services;
 using esyasoft.mobility.CHRGUP.service.core.Helpers;
 using esyasoft.mobility.CHRGUP.service.persistence.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json.Serialization;
 
-Env.Load();
+//Env.Load("../../../.env");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,18 +43,42 @@ builder.Services.AddScoped<IChargingSessionService, ChargingSessionService>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<AuditLogger>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IManagerService, ManagerService>();
+builder.Services.AddScoped<ISupervisorService, SupervisorService>();
+builder.Services.AddScoped<IFaultService, FaultService>();
+
+
 
 builder.Services.AddSingleton<RmqPublisher>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
+            )
+        };
+    });
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-   
+
 }
 
-app.UseHttpsRedirection();
 
+app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

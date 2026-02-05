@@ -1,9 +1,13 @@
 ﻿using esyasoft.mobility.CHRGUP.service.core.Helpers;
+
+using esyasoft.mobility.CHRGUP.service.core.Metadata;
+
 using esyasoft.mobility.CHRGUP.service.ocpp.CanonicalEvents;
 using esyasoft.mobility.CHRGUP.service.ocpp.Messaging;
 using esyasoft.mobility.CHRGUP.service.ocpp.Ocpp201;
 using esyasoft.mobility.CHRGUP.service.ocpp.State;
 using System.Net.WebSockets;
+using System.Data;
 using System.Text.Json;
 
 namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
@@ -22,16 +26,21 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
             // Treat status as heartbeat
             HeartbeatStore.Update(chargerId);
 
+
             if (status == "Faulted")
             {
-
-                var state = ChargerStateStore.Get(chargerId);
-                state.IsFaulted = true;
+                var severity = FaultSeverityClassifier.Classify(
+                    errorCode,
+                    status
+                );
 
                 var ev = new ChargerFaultEvent
                 {
                     ChargerId = chargerId,
                     FaultCode = errorCode ?? "Unknown",
+
+                    Severity = severity,
+
                     Timestamp = timestamp
                 };
 
@@ -40,6 +49,8 @@ namespace esyasoft.mobility.CHRGUP.service.ocpp.Ocpp16.Handlers
                     ev);
                 Console.WriteLine($"charger {chargerId} is being faulted here--v16");
             }
+
+
             else if (status == "Available")
             {
 
